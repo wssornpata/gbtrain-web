@@ -10,3 +10,12 @@
     height: 100%;
     display: flex;
 }
+
+.left-column {
+    border-right: 0px solid #000; 
+}
+.full-height-img {
+    height: 80vh;
+    width: auto;
+    max-width: 100%; 
+}

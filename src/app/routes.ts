@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
-import { InputBoxComponent } from './input-box/input-box.component';
 import { AdminComponent } from './admin/admin.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   {
@@ -11,8 +11,8 @@ const routes: Routes = [
   },
   {
     path: 'search',
-    component: InputBoxComponent,
-    title: 'InputBox page',
+    component: SearchComponent,
+    title: 'Search page',
   },
   {
     path: 'admin',

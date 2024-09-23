@@ -32,7 +32,6 @@ export class InputBoxComponent implements OnInit {
   responseData: any;
 
   constructor(private http: HttpClient) {
-    console.log('Base URL for dropdown:', environment.BASEURL_DROPDOWN);
   }
 
   ngOnInit(): void {

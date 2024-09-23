@@ -1,0 +1,40 @@
+
+<div
+    class="d-flex flex-column justify-content-center align-item-center body-content">
+    <div>
+        <h1>Price-Adjustor Panel</h1>
+    </div>
+
+    <table class="table table-bordered admin-table text-center">
+        <thead>
+            <tr>
+                <th scope="col" class="col-1">#</th>
+                <th scope="col" class="col-1">Distance(gap)</th>
+                <th scope="col" class="col-4">Description</th>
+                <th scope="col" class="col-2">Price</th>
+                <th scope="col" class="col-3">Last updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fareRate of fareRates; let i = index">
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ fareRate.distance }}</td>
+                <td>{{ fareRate.description }}</td>
+                <td>
+                    <input type="number" [(ngModel)]="fareRate.price" placeholder="Enter price">
+                </td>
+                <td>{{ fareRate.updateDatetime }}</td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <div class="d-flex justify-content-center mt-1">
+                        <button
+                            class="mr-5 btn btn-primary function-button" (click)="sendPriceAdjustorRequests()" >>Save</button>
+                        <button
+                            class="ml-5 btn btn-danger function-button" (click)="loadFareRate()" >Clear</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,20 +1,6 @@
 <main>
-    <a [routerLink]="['/']">
-      <header class="brand-name">
-        <img class="brand-logo" src="/assets/logo.svg" alt="logo" aria-hidden="true">
-      </header>
-    </a>
-    <a [routerLink]="['/search']">
-        <header class="brand-name">
-          <img class="brand-logo" src="/assets/logo.svg" alt="search" aria-hidden="true">
-        </header>
-      </a>
-      <a [routerLink]="['/admin']">
-        <header class="brand-name">
-          <img class="brand-logo" src="/assets/logo.svg" alt="admin" aria-hidden="true">
-        </header>
-      </a>
+    <app-navbar></app-navbar>
     <section class="content">
-      <router-outlet></router-outlet>
+        <router-outlet></router-outlet>
     </section>
-  </main>
+</main>

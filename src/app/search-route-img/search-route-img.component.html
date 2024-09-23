@@ -1,0 +1,12 @@
+<div class="d-flex flex-column position-absolute zoom-button">
+	<button class="btn btn-primary" (click)="zoomIn()">Zoom In</button>
+	<button class="btn btn-secondary mt-2" (click)="zoomOut()">Zoom Out</button>
+</div>
+<div
+	class="col-md-8 bg-lightcoral d-flex align-items-center justify-content-center position-relative ">
+	<div>
+		<img src="../../assets/img/RouteMap.jpg" alt="Route Map"
+			class="img-fluid zoomable-img align-items-center"
+			[style.transform]="'scale(' + scale + ')'">
+	</div>
+</div>

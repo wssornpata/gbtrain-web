@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-landing',
+  selector: 'app-navbar',
   standalone: true,
   imports: [
     RouterModule,
   ],
-  templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css'
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
 })
-export class LandingComponent {
+export class NavbarComponent {
 
 }

@@ -1,0 +1,18 @@
+#dropdown-basic {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+::ng-deep .dropdown-menu {
+    max-height: 400px;
+    overflow-y: auto;
+}

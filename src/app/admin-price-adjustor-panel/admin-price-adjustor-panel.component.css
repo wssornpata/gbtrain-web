@@ -1,0 +1,23 @@
+.body-content {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body-content div {
+  margin-top: 2em;
+}
+
+.admin-table {
+  margin-top: 3em;
+  max-width: 70%;
+}
+
+.function-button {
+  font-size: 1em;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
