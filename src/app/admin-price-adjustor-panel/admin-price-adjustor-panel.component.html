@@ -1,6 +1,6 @@
 
 <div
-    class="d-flex flex-column justify-content-center align-item-center body-content">
+    class="pt-5 d-flex flex-column justify-content-center align-item-center body-content">
     <div>
         <h1>Price-Adjustor Panel</h1>
     </div>
@@ -21,20 +21,44 @@
                 <td>{{ fareRate.distance }}</td>
                 <td>{{ fareRate.description }}</td>
                 <td>
-                    <input type="number" [(ngModel)]="fareRate.price" placeholder="Enter price">
+                    <input type="text" [(ngModel)]="fareRate.price"
+                        placeholder="Enter price">
                 </td>
                 <td>{{ fareRate.updateDatetime }}</td>
             </tr>
             <tr>
                 <td colspan="6">
                     <div class="d-flex justify-content-center mt-1">
+                        <button type="button"
+                            class="btn btn-primary function-button"
+                            (click)="openModal(confirmModal)">Save</button>
+                        <br><br>
                         <button
-                            class="mr-5 btn btn-primary function-button" (click)="sendPriceAdjustorRequests()" >>Save</button>
-                        <button
-                            class="ml-5 btn btn-danger function-button" (click)="loadFareRate()" >Clear</button>
+                            class="ml-5 btn btn-danger function-button"
+                            (click)="loadFareRate()">Clear</button>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 </div>
+
+<ng-template #confirmModal>
+    <div class="modal-body text-center">
+        <p>Do you want to confirm?</p>
+        <div class="d-flex align-items-center justify-content-around">
+            <button type="button" class="btn btn-primary"
+                (click)="onConfirm(); openModal(responseModal)">Yes</button>
+            <button type="button" class="btn btn-danger"
+                (click)="onDecline()">No</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #responseModal>
+    <div *ngIf="messageResponse" class="modal-body text-center">
+        <p>{{ messageResponse.message }}</p>
+        <button type="button" class="btn btn-primary"
+            (click)="closeModal()">Close</button>
+    </div>
+</ng-template>

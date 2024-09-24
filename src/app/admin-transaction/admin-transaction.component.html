@@ -1,1 +1,30 @@
-<p>admin-transaction works!</p>
+
+<div
+    class="pt-5 d-flex flex-column justify-content-center align-item-center body-content">
+    <div>
+        <h1>Transaction History</h1>
+    </div>
+
+    <table class="table table-bordered transaction-table text-center">
+        <thead>
+            <tr>
+                <th scope="col" class="col-1">Id</th>
+                <th scope="col" class="col-2">Source</th>
+                <th scope="col" class="col-2">Destination</th>
+                <th scope="col" class="col-1">Price</th>
+                <th scope="col" class="col-1">Type</th>
+                <th scope="col" class="col-3">Create Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let transaction of transactions; let i = index">
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.source }}</td>
+                <td>{{ transaction.destination }}</td>
+                <td>{{ transaction.price }}</td>
+                <td>{{ transaction.type }}</td>
+                <td>{{ transaction.createDatetime }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

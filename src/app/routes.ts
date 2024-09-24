@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
 import { AdminComponent } from './admin/admin.component';
 import { SearchComponent } from './search/search.component';
+import { AdminTransactionComponent } from './admin-transaction/admin-transaction.component';
 
 const routes: Routes = [
   {
@@ -17,7 +18,12 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminComponent,
-    title: 'InputBox page',
+    title: 'Adjust price page',
+  },
+  {
+    path: 'admin/transaction',
+    component: AdminTransactionComponent,
+    title: 'transaction history',
   },
 ];
 

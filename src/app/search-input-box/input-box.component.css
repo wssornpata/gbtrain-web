@@ -16,3 +16,7 @@
     max-height: 400px;
     overflow-y: auto;
 }
+
+.alert-text{
+    width: 330px;
+}

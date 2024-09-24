@@ -1,0 +1,15 @@
+.body-content {
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body-content div {
+  margin-top: 2em;
+}
+
+.transaction-table {
+  margin-top: 3em;
+  max-width: 70%;
+}

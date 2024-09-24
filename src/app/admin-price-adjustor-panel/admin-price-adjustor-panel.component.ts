@@ -1,59 +1,101 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { PriceAdjustorRequest } from './request/price-adjustor-request';
 import { FareRateModel } from '../model/farerate-model';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { catchError, of } from 'rxjs';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
+import { catchError, delay, map, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { environment } from '../../environments/environment';
+import { MessageResponse } from '../dto/error/response/error-message-response';
 
 @Component({
   selector: 'app-admin-price-adjustor-panel',
   standalone: true,
-  imports: [HttpClientModule, CommonModule, FormsModule],
+  imports: [HttpClientModule, CommonModule, FormsModule, ModalModule],
+  providers: [BsModalService],
   templateUrl: './admin-price-adjustor-panel.component.html',
   styleUrl: './admin-price-adjustor-panel.component.css',
 })
 export class AdminPriceAdjustorPanelComponent implements OnInit {
+  modalRef?: BsModalRef;
   fareRates: FareRateModel[] = [];
   priceAdjustorRequests: PriceAdjustorRequest[] = [];
+  messageResponse: MessageResponse = { message: '' };
+  responseData: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private modalService: BsModalService) {}
   ngOnInit(): void {
     this.loadFareRate();
   }
 
+  openModal(template: TemplateRef<void>) {
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  closeModal(): void {
+    this.modalRef?.hide();
+  }
+
+  onConfirm(): void {
+    this.postPriceAdjustment();
+    this.closeModal();
+  }
+
+  onDecline(): void {
+    this.loadFareRate();
+    this.closeModal();
+  }
+
   loadFareRate(): void {
     this.http
-      .get<FareRateModel[]>(`${environment.BASEURL_PRICEADJUSTOR}/getfarerate`)
+      .get<HttpResponse<any>>(
+        `${environment.BASEURL_PRICEADJUSTOR}/getfarerate`,
+        { observe: 'response' }
+      )
       .pipe(
-        catchError((error: any) => {
-          console.error('Error fetching station data', error);
+        catchError((httpErrorResponse: HttpErrorResponse) => {
+          console.error('Error fetching farerate data', httpErrorResponse);
           return of([]);
         })
       )
-      .subscribe((data: FareRateModel[]) => {
-        this.fareRates = data;
+      .subscribe((response: any) => {
+        if (response.status == 200) {
+          this.fareRates = response.body;
+        }
       });
   }
 
-  sendPriceAdjustorRequests(): void {
+  postPriceAdjustment(): void {
     this.mapFareRatesToPriceAdjustorRequests();
-    console.log(this.priceAdjustorRequests);
-
     this.http
-      .patch(
+      .patch<HttpResponse<any>>(
         `${environment.BASEURL_PRICEADJUSTOR}/adjustprice`,
-        this.priceAdjustorRequests
+        this.priceAdjustorRequests,
+        { observe: 'response' }
       )
       .pipe(
-        catchError((error: any) => {
-          console.error('Error sending price adjustor requests', error);
-          return of(null);
+        catchError((httpErrorResponse: HttpErrorResponse) => {
+          if (httpErrorResponse.status == 400) {
+            this.messageResponse.message = httpErrorResponse.error.error;
+          }
+          console.error(
+            'Error sending price adjustor requests',
+            httpErrorResponse
+          );
+          return of([]);
         })
       )
       .subscribe((response: any) => {
         this.loadFareRate();
+        if (response.status == 200) {
+          this.messageResponse.message = 'Success';
+        }
       });
   }
 
