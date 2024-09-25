@@ -1,67 +1,85 @@
-<div class="d-flex align-items-center justify-content-around" id="search-component">
-    <ng-template #customItemTemplate let-model="item" let-index="index">
-        <h5>This is: {{ model.stationName }} Full Name: {{ model.stationFullname }} Index: {{ index }}</h5>
-    </ng-template>
-    <div>
-        <div class="mb-5">
-            <label for="source">Source:</label>
-            <input
-                id="source"
-                [(ngModel)]="source"
-                [typeahead]="stations"
-                [typeaheadOptionField]="'stationName'"
-                [typeaheadOptionsLimit]
-                [typeaheadMinLength]="0"
-                [typeaheadItemTemplate]="customTemplate"
-                class="form-control"
-                placeholder="Enter source"/>
-        </div>
-        <div class="mb-5">
-            <label for="destination">Destination:</label>
-            <input
-                id="destination"
-                [(ngModel)]="destination"
-                [typeahead]="stations"
-                [typeaheadOptionField]="'stationName'"
-                [typeaheadOptionsLimit]
-                [typeaheadMinLength]="0"
-                [typeaheadItemTemplate]="customTemplate"
-                class="form-control"
-                placeholder="Enter destination"
-				needs-validation
-                required />
-        </div>
+<div class="d-flex align-items-center justify-content-around"
+	id="search-component">
+	<ng-template #customItemTemplate let-model="item" let-index="index">
+		<h5>This is: {{ model.stationName }} Full Name: {{ model.stationFullname }}
+			Index: {{ index }}</h5>
+	</ng-template>
+	<div>
+		<div class="mb-5">
+			<label for="source">Source:</label>
+			<input
+				id="source"
+				[(ngModel)]="source"
+				[typeahead]="stations"
+				[typeaheadOptionField]="'stationName'"
+				[typeaheadOptionsLimit]="stations.length"
+				[typeaheadMinLength]="0"
+				[typeaheadItemTemplate]="customTemplate"
+				class="form-control"
+				placeholder="Enter source"
+			/>
+		</div>
+		<div class="mb-5">
+			<label for="destination">Destination:</label>
+			<input
+				id="destination"
+				[(ngModel)]="destination"
+				[typeahead]="stations"
+				[typeaheadOptionField]="'stationName'"
+				[typeaheadOptionsLimit]="stations.length"
+				[typeaheadMinLength]="0"
+				[typeaheadItemTemplate]="customTemplate"
+				class="form-control"
+				placeholder="Enter Destination"
+			/>
+		</div>
 		<div class="alert-text">
 			<alert *ngIf="messageResponse.message" type="danger" class="mt-2">
 				{{ messageResponse.message }}
 			</alert>
 		</div>
-        <ng-template #customTemplate let-model="item">
-            {{ model.stationName }} ({{ model.stationFullname }})
-        </ng-template>
-        <div class="mt-2 d-flex justify-content-between">
-            <div class="position-relative" dropdown>
-                <button id="button-basic" dropdownToggle type="button"
-                    class="btn btn-success dropdown-toggle"
-                    aria-controls="dropdown-basic">
-                    {{ type }} <span class="caret"></span>
-                </button>
-                <ul id="dropdown-basic" *dropdownMenu
-                    class="dropdown-menu"
-                    role="menu" aria-labelledby="button-basic">
-                    <li role="menuitem" *ngFor="let type of types">
-                        <a class="dropdown-item" (click)="selectedType(type.id)">{{type.id}}. {{type.description}}</a>
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <button class="btn btn-primary submit-button" (click)="callCalculate()">Submit</button>
-            </div>
-        </div>
-    </div>
+		<ng-template #customTemplate let-model="item">
+			{{ model.stationName }} ({{ model.stationFullname }})
+		</ng-template>
+		<div class="mt-2 d-flex justify-content-between">
+			<div class="position-relative" dropdown>
+				<button id="button-basic" dropdownToggle type="button"
+					class="btn btn-success dropdown-toggle"
+					aria-controls="dropdown-basic">
+					{{ type }} <span class="caret"></span>
+				</button>
+				<ul id="dropdown-basic" *dropdownMenu
+					class="dropdown-menu"
+					role="menu" aria-labelledby="button-basic">
+					<li role="menuitem" *ngFor="let type of types">
+						<a class="dropdown-item" (click)="selectedType(type.id)">{{type.id}}.
+							{{type.description}}</a>
+					</li>
+				</ul>
+			</div>
+			<div>
+				<button class="btn btn-primary submit-button"
+					(click)="callCalculate(responseModalTemplate);">Submit</button>
+			</div>
+		</div>
+	</div>
 </div>
 
-<div *ngIf="responseData">
-    <h3>Response Data:</h3>
-    <pre>{{ responseData | json }}</pre>
-</div>
+<ng-template #responseModalTemplate>
+	<div class="modal-header">
+		<h4 class="modal-title pull-left">Response Data</h4>
+		<button type="button" class="close pull-right" aria-label="Close"
+			(click)="closeModal()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<p><strong>Source:</strong> {{ responseData.source }}</p>
+		<p><strong>Destination:</strong> {{ responseData.destination }}</p><p>
+			<strong>Distance:</strong> {{ responseData.distance }}
+			{{ responseData.distance > 1 ? 'Stations' : 'Station' }}
+		</p>
+		<p><strong>Price:</strong> {{ responseData.price }} บาท</p>
+		<p><strong>Type:</strong> {{ responseData.type }}</p>
+	</div>
+</ng-template>

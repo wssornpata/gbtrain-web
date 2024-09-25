@@ -7,29 +7,35 @@ import {
   HttpErrorResponse,
   HttpResponse,
 } from '@angular/common/http';
-import { catchError, delay, map, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { environment } from '../../environments/environment';
 import { MessageResponse } from '../dto/error/response/error-message-response';
+import { DateService } from '../services/date.service';
+import { PriceAdjustorService } from '../services/price-adjustor.service';
 
 @Component({
   selector: 'app-admin-price-adjustor-panel',
   standalone: true,
   imports: [HttpClientModule, CommonModule, FormsModule, ModalModule],
-  providers: [BsModalService],
+  providers: [BsModalService, DatePipe, PriceAdjustorService, DateService],
   templateUrl: './admin-price-adjustor-panel.component.html',
   styleUrl: './admin-price-adjustor-panel.component.css',
 })
 export class AdminPriceAdjustorPanelComponent implements OnInit {
   modalRef?: BsModalRef;
   fareRates: FareRateModel[] = [];
-  priceAdjustorRequests: PriceAdjustorRequest[] = [];
+  priceAdjustorRequestList: PriceAdjustorRequest[] = [];
   messageResponse: MessageResponse = { message: '' };
   responseData: any;
 
-  constructor(private http: HttpClient, private modalService: BsModalService) {}
+  constructor(
+    private modalService: BsModalService,
+    private priceAdjustorService: PriceAdjustorService,
+    public dateService: DateService
+  ) {}
   ngOnInit(): void {
     this.loadFareRate();
   }
@@ -43,7 +49,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   }
 
   onConfirm(): void {
-    this.postPriceAdjustment();
+    this.adjustPrices(this.mapFareRatesToPriceAdjustorRequests);
     this.closeModal();
   }
 
@@ -52,55 +58,40 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
     this.closeModal();
   }
 
+  setMessage(message: string): void {
+    this.messageResponse.message = message;
+  }
+
   loadFareRate(): void {
-    this.http
-      .get<HttpResponse<any>>(
-        `${environment.BASEURL_PRICEADJUSTOR}/getfarerate`,
-        { observe: 'response' }
-      )
-      .pipe(
-        catchError((httpErrorResponse: HttpErrorResponse) => {
-          console.error('Error fetching farerate data', httpErrorResponse);
-          return of([]);
-        })
-      )
-      .subscribe((response: any) => {
-        if (response.status == 200) {
-          this.fareRates = response.body;
-        }
-      });
+    this.priceAdjustorService.getRate().subscribe(
+      (response: HttpResponse<any>) => {
+        this.fareRates = response.body;
+      },
+      (httpErrorResponse: HttpErrorResponse) => {
+        console.error('Error occurred:', httpErrorResponse);
+      }
+    );
   }
 
-  postPriceAdjustment(): void {
-    this.mapFareRatesToPriceAdjustorRequests();
-    this.http
-      .patch<HttpResponse<any>>(
-        `${environment.BASEURL_PRICEADJUSTOR}/adjustprice`,
-        this.priceAdjustorRequests,
-        { observe: 'response' }
-      )
-      .pipe(
-        catchError((httpErrorResponse: HttpErrorResponse) => {
-          if (httpErrorResponse.status == 400) {
-            this.messageResponse.message = httpErrorResponse.error.error;
-          }
-          console.error(
-            'Error sending price adjustor requests',
-            httpErrorResponse
-          );
-          return of([]);
-        })
-      )
-      .subscribe((response: any) => {
-        this.loadFareRate();
-        if (response.status == 200) {
+  adjustPrices(priceAdjustorRequestList: PriceAdjustorRequest[]) {
+    this.priceAdjustorService
+      .postPriceAdjustment(priceAdjustorRequestList)
+      .subscribe(
+        (response: HttpResponse<any>) => {
+          this.responseData = response.body;
           this.messageResponse.message = 'Success';
+        },
+        (httpErrorResponse: HttpErrorResponse) => {
+          this.setMessage(
+            httpErrorResponse.error.status + ' ' + httpErrorResponse.error.error
+          );
+          console.error('Error occurred:', httpErrorResponse);
         }
-      });
+      );
   }
 
-  private mapFareRatesToPriceAdjustorRequests(): void {
-    this.priceAdjustorRequests = this.fareRates.map((fareRate) => {
+  private get mapFareRatesToPriceAdjustorRequests(): PriceAdjustorRequest[] {
+    return this.fareRates.map((fareRate) => {
       return new PriceAdjustorRequest(
         fareRate.id,
         fareRate.distance,

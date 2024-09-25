@@ -1,47 +1,59 @@
 import { CommonModule } from '@angular/common';
-import {
-  HttpClient,
-  HttpClientModule,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TransactionModel } from '../model/transaction-model';
-import { environment } from '../../environments/environment';
-import { catchError, of } from 'rxjs';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { TransactionService } from '../services/transaction.service';
 
 @Component({
   selector: 'app-admin-transaction',
   standalone: true,
-  imports: [HttpClientModule, CommonModule, FormsModule],
+  imports: [
+    HttpClientModule, 
+    CommonModule, 
+    FormsModule, 
+    PaginationModule,
+  ],
+  providers: [
+    TransactionService,
+  ],
   templateUrl: './admin-transaction.component.html',
   styleUrl: './admin-transaction.component.css',
 })
 export class AdminTransactionComponent implements OnInit {
   transactions: TransactionModel[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(private transactionService: TransactionService) {}
+
   ngOnInit(): void {
     this.loadTransactions();
   }
 
   private loadTransactions(): void {
-    this.http
-      .get<HttpResponse<any>>(
-        `${environment.BASEURL_TRANSACTION}/gettransaction`,
-        { observe: 'response' }
-      )
-      .pipe(
-        catchError((httpErrorResponse: HttpErrorResponse) => {
-          console.error('Error fetching transaction data', httpErrorResponse);
-          return of([]);
-        })
-      )
-      .subscribe((response: any) => {
+    this.transactionService.getTransactions().subscribe(
+      (response: HttpResponse<any>) => {
         if (response.status == 200) {
           this.transactions = response.body;
+          this.totalItems = this.transactions.length;
         }
-      });
+      },
+      (httpErrorResponse: HttpErrorResponse) => {
+        console.error('Error loading types:', httpErrorResponse);
+      }
+    );
+  }
+
+  get paginatedTransactions(): TransactionModel[] {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    return this.transactions.slice(start, end);
+  }
+
+  pageChanged(event: any): void {
+    this.currentPage = event.page;
   }
 }

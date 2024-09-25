@@ -24,7 +24,7 @@
                     <input type="text" [(ngModel)]="fareRate.price"
                         placeholder="Enter price">
                 </td>
-                <td>{{ fareRate.updateDatetime }}</td>
+                <td>{{ dateService.formatDate(fareRate.updateDatetime) }}</td>
             </tr>
             <tr>
                 <td colspan="6">

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TypeModel } from '../model/type-model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { firstValueFrom } from 'rxjs';
-import { StationModel } from '../model/station-model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,23 +9,17 @@ import { StationModel } from '../model/station-model';
 export class DropdownService {
   constructor(private http: HttpClient) {}
 
-  async getTypes(): Promise<TypeModel[]> {
-    try {
-      return await firstValueFrom(
-        this.http.get<TypeModel[]>(`${environment.BASEURL_DROPDOWN}/type`)
-      );
-    } catch (error) {
-      return [];
-    }
+  getType(): Observable<HttpResponse<any>> {
+    return this.http.get<HttpResponse<any>>(
+      `${environment.BASEURL_DROPDOWN}/type`,
+      { observe: 'response' }
+    );
   }
 
-  async getStations(): Promise<StationModel[]> {
-    try {
-      return await firstValueFrom(
-        this.http.get<StationModel[]>(`${environment.BASEURL_DROPDOWN}/station`)
-      );
-    } catch (error) {
-      return [];
-    }
+  getStations(): Observable<HttpResponse<any>> {
+    return this.http.get<HttpResponse<any>>(
+      `${environment.BASEURL_DROPDOWN}/station`,
+      { observe: 'response' }
+    );
   }
 }
