@@ -111,7 +111,6 @@ export class InputBoxComponent implements OnInit {
       (response: HttpResponse<any>) => {
         if (this.httpService.isResponseOk(response.status)) {
           this.stations = response.body;
-          console.log('Stations loaded successfully:', response.body);
         }
       },
       (httpErrorResponse: HttpErrorResponse) => {
@@ -125,7 +124,6 @@ export class InputBoxComponent implements OnInit {
       (response: HttpResponse<any>) => {
         if (this.httpService.isResponseOk(response.status)) {
           this.types = response.body;
-          console.log('Type loaded successfully:', response.body);
         }
       },
       (httpErrorResponse: HttpErrorResponse) => {
