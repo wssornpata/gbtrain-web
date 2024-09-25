@@ -36,6 +36,7 @@ import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { DropdownService } from '../services/dropdown.service';
 import { FareCalculatorService } from '../services/fare-calculator.service';
 import { FareCalculatorResponse } from '../dto/search/response/fare-calculator-response.model';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-input-box',
@@ -84,6 +85,7 @@ export class InputBoxComponent implements OnInit {
   constructor(
     private modalService: BsModalService,
     private fareCalculatorService: FareCalculatorService,
+	private httpService: HttpService,
     private dropdownService: DropdownService
   ) {}
 
@@ -107,7 +109,7 @@ export class InputBoxComponent implements OnInit {
   private loadStations(): void {
     this.dropdownService.getStations().subscribe(
       (response: HttpResponse<any>) => {
-        if (response.status === 200) {
+        if (this.httpService.isResponseOk(response.status)) {
           this.stations = response.body;
           console.log('Stations loaded successfully:', response.body);
         }
@@ -121,7 +123,7 @@ export class InputBoxComponent implements OnInit {
   private loadType(): void {
     this.dropdownService.getType().subscribe(
       (response: HttpResponse<any>) => {
-        if (response.status === 200) {
+        if (this.httpService.isResponseOk(response.status)) {
           this.types = response.body;
           console.log('Type loaded successfully:', response.body);
         }
@@ -141,7 +143,7 @@ export class InputBoxComponent implements OnInit {
 
     this.fareCalculatorService.calculateFare(fareCalculatorRequest).subscribe(
       (response: HttpResponse<any>) => {
-        if (response.status === 200) {
+        if (this.httpService.isResponseOk(response.status)) {
           this.responseData = response.body;
           this.openModal(responseModalTemplate);
         }

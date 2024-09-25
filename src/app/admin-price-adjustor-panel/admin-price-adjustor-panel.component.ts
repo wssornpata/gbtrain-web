@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { PriceAdjustorRequest } from './request/price-adjustor-request';
+import { PriceAdjustorRequest } from '../dto/admin/request/price-adjustor-request';
 import { FareRateModel } from '../model/farerate-model';
 import {
   HttpClient,
@@ -15,12 +15,24 @@ import { environment } from '../../environments/environment';
 import { MessageResponse } from '../dto/error/response/error-message-response';
 import { DateService } from '../services/date.service';
 import { PriceAdjustorService } from '../services/price-adjustor.service';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-admin-price-adjustor-panel',
   standalone: true,
-  imports: [HttpClientModule, CommonModule, FormsModule, ModalModule],
-  providers: [BsModalService, DatePipe, PriceAdjustorService, DateService],
+  imports: [
+	HttpClientModule, 
+	CommonModule, 
+	FormsModule, 
+	ModalModule
+],
+  providers: [
+	BsModalService, 
+	DatePipe, 
+	PriceAdjustorService, 
+	DateService, 
+	HttpService
+],
   templateUrl: './admin-price-adjustor-panel.component.html',
   styleUrl: './admin-price-adjustor-panel.component.css',
 })
@@ -28,12 +40,14 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   modalRef?: BsModalRef;
   fareRates: FareRateModel[] = [];
   priceAdjustorRequestList: PriceAdjustorRequest[] = [];
-  messageResponse: MessageResponse = { message: '' };
-  responseData: any;
+  messageResponse: MessageResponse = {
+    message: '',
+  };
 
   constructor(
     private modalService: BsModalService,
     private priceAdjustorService: PriceAdjustorService,
+    private httpService: HttpService,
     public dateService: DateService
   ) {}
   ngOnInit(): void {
@@ -65,7 +79,9 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   loadFareRate(): void {
     this.priceAdjustorService.getRate().subscribe(
       (response: HttpResponse<any>) => {
-        this.fareRates = response.body;
+        if (this.httpService.isResponseOk(response.status)) {
+          this.fareRates = response.body;
+        }
       },
       (httpErrorResponse: HttpErrorResponse) => {
         console.error('Error occurred:', httpErrorResponse);
@@ -78,8 +94,9 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
       .postPriceAdjustment(priceAdjustorRequestList)
       .subscribe(
         (response: HttpResponse<any>) => {
-          this.responseData = response.body;
-          this.messageResponse.message = 'Success';
+          if (this.httpService.isResponseOk(response.status)) {
+            this.messageResponse.message = 'Success';
+          }
         },
         (httpErrorResponse: HttpErrorResponse) => {
           this.setMessage(

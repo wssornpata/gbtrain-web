@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TransactionModel } from '../model/transaction-model';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { TransactionService } from '../services/transaction.service';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-admin-transaction',
@@ -17,6 +18,7 @@ import { TransactionService } from '../services/transaction.service';
   ],
   providers: [
     TransactionService,
+    HttpService,
   ],
   templateUrl: './admin-transaction.component.html',
   styleUrl: './admin-transaction.component.css',
@@ -27,7 +29,10 @@ export class AdminTransactionComponent implements OnInit {
   itemsPerPage: number = 10;
   totalItems: number = 0;
 
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+    private httpService: HttpService,
+  ) {}
 
   ngOnInit(): void {
     this.loadTransactions();
@@ -36,7 +41,7 @@ export class AdminTransactionComponent implements OnInit {
   private loadTransactions(): void {
     this.transactionService.getTransactions().subscribe(
       (response: HttpResponse<any>) => {
-        if (response.status == 200) {
+        if (this.httpService.isResponseOk(response.status)) {
           this.transactions = response.body;
           this.totalItems = this.transactions.length;
         }

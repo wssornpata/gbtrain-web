@@ -7,9 +7,9 @@ export interface PriceAdjustorRequest {
 
 export class PriceAdjustorRequest {
   constructor(
-    public id: number = 0,
-    public distance: number = 0,
-    public price: number = 0,
-    public description: string = '',
+    id: number = 0,
+    distance: number = 0,
+    price: number = 0,
+    description: string = ''
   ) {}
 }

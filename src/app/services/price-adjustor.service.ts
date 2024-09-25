@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { PriceAdjustorRequest } from '../admin-price-adjustor-panel/request/price-adjustor-request';
+import { PriceAdjustorRequest } from '../dto/admin/request/price-adjustor-request';
 import { MessageResponse } from '../dto/error/response/error-message-response';
 import { Observable } from 'rxjs';
 
