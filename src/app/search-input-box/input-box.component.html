@@ -9,6 +9,7 @@
 			<label for="source">Source:</label>
 			<input
 				id="source"
+				type="text"
 				[(ngModel)]="source"
 				[typeahead]="stations"
 				[typeaheadOptionField]="'stationName'"
@@ -17,12 +18,14 @@
 				[typeaheadItemTemplate]="customTemplate"
 				class="form-control"
 				placeholder="Enter source"
+				required
 			/>
 		</div>
 		<div class="mb-5">
 			<label for="destination">Destination:</label>
 			<input
 				id="destination"
+				type="text"
 				[(ngModel)]="destination"
 				[typeahead]="stations"
 				[typeaheadOptionField]="'stationName'"
@@ -31,6 +34,7 @@
 				[typeaheadItemTemplate]="customTemplate"
 				class="form-control"
 				placeholder="Enter Destination"
+				required
 			/>
 		</div>
 		<div class="alert-text">
@@ -76,9 +80,6 @@
 	<div class="modal-body">
 		<p><strong>Source:</strong> {{ responseData.source }}</p>
 		<p><strong>Destination:</strong> {{ responseData.destination }}</p><p>
-			<strong>Distance:</strong> {{ responseData.distance }}
-			{{ responseData.distance > 1 ? 'Stations' : 'Station' }}
-		</p>
 		<p><strong>Price:</strong> {{ responseData.price }} บาท</p>
 		<p><strong>Type:</strong> {{ responseData.type }}</p>
 	</div>

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { TransactionModel } from '../model/transaction-model';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { TransactionService } from '../services/transaction.service';
 import { HttpService } from '../services/http.service';
+import { DateService } from '../services/date.service';
 
 @Component({
   selector: 'app-admin-transaction',
@@ -18,6 +19,8 @@ import { HttpService } from '../services/http.service';
   ],
   providers: [
     TransactionService,
+    DateService,
+    DatePipe,
     HttpService,
   ],
   templateUrl: './admin-transaction.component.html',
@@ -31,6 +34,7 @@ export class AdminTransactionComponent implements OnInit {
 
   constructor(
     private transactionService: TransactionService,
+    public dateService: DateService,
     private httpService: HttpService,
   ) {}
 

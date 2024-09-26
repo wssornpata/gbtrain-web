@@ -10,3 +10,24 @@
     height: 100%;
     display: flex;
 }
+
+.container-fluid{
+    padding: 0;
+}
+
+
+.show-img-user:hover {
+    background-image: url('C:/Users/SornpatAmthiangtham/Downloads/user.png');
+    transition:  2s ease;
+    background-size: cover;
+    background-position: center;
+    color: transparent;
+}
+
+.show-img-admin:hover {
+    background-image: url('C:/Users/SornpatAmthiangtham/Downloads/admin.png');
+    transition:  2s ease;
+    background-size: cover;
+    background-position: center;
+    color: transparent;
+}

@@ -68,24 +68,16 @@ export class InputBoxComponent implements OnInit {
   types: TypeModel[] = [];
 
   //Partial make ng template error
-  responseData: FareCalculatorResponse = {
-    source: '',
-    destination: '',
-    type: 0,
-    distance: 0,
-    price: 0,
-  };
+  responseData: FareCalculatorResponse = new FareCalculatorResponse;
 
-  messageResponse: MessageResponse = {
-    message: '',
-  };
+  messageResponse: MessageResponse = new MessageResponse();
 
   modalRef?: BsModalRef;
 
   constructor(
     private modalService: BsModalService,
     private fareCalculatorService: FareCalculatorService,
-	private httpService: HttpService,
+    private httpService: HttpService,
     private dropdownService: DropdownService
   ) {}
 
@@ -133,11 +125,11 @@ export class InputBoxComponent implements OnInit {
   }
 
   callCalculate(responseModalTemplate: any): void {
-    const fareCalculatorRequest: FareCalculatorRequest = {
-      source: this.source,
-      destination: this.destination,
-      type: this.type,
-    };
+    const fareCalculatorRequest = new FareCalculatorRequest(
+      this.source,
+      this.destination,
+      this.type
+    );
 
     this.fareCalculatorService.calculateFare(fareCalculatorRequest).subscribe(
       (response: HttpResponse<any>) => {
@@ -148,7 +140,7 @@ export class InputBoxComponent implements OnInit {
       },
       (httpErrorResponse: HttpErrorResponse) => {
         console.error('Error loading types:', httpErrorResponse);
-        this.messageResponse.message = httpErrorResponse.error.message;
+        this.messageResponse.setMessage(httpErrorResponse.error.message);
       }
     );
   }

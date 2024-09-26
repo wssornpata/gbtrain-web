@@ -22,7 +22,7 @@
 				<td>{{ transaction.destination }}</td>
 				<td>{{ transaction.price }}</td>
 				<td>{{ transaction.type }}</td>
-				<td>{{ transaction.createDatetime }}</td>
+				<td>{{ dateService.formatDate( transaction.createDatetime) }}</td>
 			</tr>
 		</tbody>
 	</table>

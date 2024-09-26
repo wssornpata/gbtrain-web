@@ -1,7 +1,11 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { PriceAdjustorRequest } from '../dto/admin/request/price-adjustor-request';
 import { FareRateModel } from '../model/farerate-model';
-import { HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
@@ -21,7 +25,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   modalRef?: BsModalRef;
   fareRates: FareRateModel[] = [];
   priceAdjustorRequestList: PriceAdjustorRequest[] = [];
-  messageResponse: MessageResponse = { message: '' };
+  messageResponse: MessageResponse = new MessageResponse();
 
   constructor(
     private modalService: BsModalService,
@@ -41,17 +45,13 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   }
 
   onConfirm(): void {
-    this.adjustPrices(this.fareRates);
+    this.adjustPrices(this.wrapperFareRateRequestList(this.fareRates));
     this.closeModal();
   }
 
   onDecline(): void {
     this.loadFareRate();
     this.closeModal();
-  }
-
-  setMessage(message: string): void {
-    this.messageResponse.message = message;
   }
 
   loadFareRate(): void {
@@ -66,18 +66,33 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   }
 
   adjustPrices(priceAdjustorRequestList: PriceAdjustorRequest[]) {
+    this.messageResponse.clearMessage();
     this.priceAdjustorService
       .postPriceAdjustment(priceAdjustorRequestList)
       .subscribe(
         (response: HttpResponse<any>) => {
-          this.messageResponse.message = 'Success';
+          this.messageResponse.setMessage('Success');
         },
         (httpErrorResponse: HttpErrorResponse) => {
-          this.setMessage(
+          this.messageResponse.setMessage(
             httpErrorResponse.error.status + ' ' + httpErrorResponse.error.error
           );
           console.error('Error occurred:', httpErrorResponse);
         }
       );
+  }
+
+  private wrapperFareRateRequestList(
+    fareRates: FareRateModel[]
+  ): PriceAdjustorRequest[] {
+    return fareRates.map(
+      (fareRate) =>
+        new PriceAdjustorRequest(
+          fareRate.id,
+          fareRate.distance,
+          fareRate.price,
+          fareRate.description
+        )
+    );
   }
 }
