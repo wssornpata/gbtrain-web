@@ -22,7 +22,7 @@
 				<td>{{ transaction.destination }}</td>
 				<td>{{ transaction.price }}</td>
 				<td>{{ transaction.type }}</td>
-				<td>{{ dateService.formatDate( transaction.createDatetime) }}</td>
+				<td>{{ dateService.formatDate(transaction.createDatetime) }}</td>
 			</tr>
 		</tbody>
 	</table>
@@ -31,7 +31,10 @@
 		[totalItems]="totalItems"
 		[(ngModel)]="currentPage"
 		[itemsPerPage]="itemsPerPage"
+		[maxSize]="5"
+		[boundaryLinks]="true"
+		[rotate]="true"
 		(pageChanged)="pageChanged($event)"
-		class="d-flex justify-content-center">
+		class="pagination-fixed d-flex justify-content-center">
 	</pagination>
 </div>
