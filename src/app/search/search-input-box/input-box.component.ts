@@ -1,49 +1,34 @@
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  Type,
-  TemplateRef,
-} from '@angular/core';
-import {
-  HttpClient,
   HttpClientModule,
   HttpErrorResponse,
   HttpResponse,
-  HttpResponseBase,
 } from '@angular/common/http';
 import {
-  catchError,
-  lastValueFrom,
-  Observable,
-  of,
-  tap,
-  throwError,
-} from 'rxjs';
-import { FareCalculatorRequest } from '../dto/search/request/fare-calculator-request.model';
-import { StationModel } from '../model/station-model';
-import { TypeModel } from '../model/type-model';
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { environment } from '../../environments/environment';
 import { AlertConfig, AlertModule } from 'ngx-bootstrap/alert';
-import { MessageResponse } from '../dto/error/response/error-message-response';
 import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { DropdownService } from '../services/dropdown.service';
-import { FareCalculatorService } from '../services/fare-calculator.service';
-import { FareCalculatorResponse } from '../dto/search/response/fare-calculator-response.model';
-import { HttpService } from '../services/http.service';
+import { FareCalculatorRequest } from './dtop/request/fare-calculator-request.model';
+import { StationModel } from '../../model/station-model';
+import { TypeModel } from '../../model/type-model';
+import { MessageResponse } from '../../dto/error/response/error-message-response';
+import { FareCalculatorResponse } from './dtop/response/fare-calculator-response.model';
+import { HttpService } from '../../services/http.service';
+import { SearchInputBoxService } from './searchInputBox.service';
 
 @Component({
   selector: 'app-input-box',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     TypeaheadModule,
     BsDropdownModule,
     HttpClientModule,
@@ -53,33 +38,31 @@ import { HttpService } from '../services/http.service';
   providers: [
     AlertConfig,
     BsModalService,
-    FareCalculatorService,
-    DropdownService,
+    SearchInputBoxService,
   ],
   templateUrl: './input-box.component.html',
   styleUrls: ['./input-box.component.css'],
 })
 export class InputBoxComponent implements OnInit {
-  source: string = '';
-  destination: string = '';
-  type: number = 1;
-
+  form: FormGroup;
   stations: StationModel[] = [];
   types: TypeModel[] = [];
-
-  //Partial make ng template error
-  responseData: FareCalculatorResponse = new FareCalculatorResponse;
-
+  responseData: FareCalculatorResponse = new FareCalculatorResponse();
   messageResponse: MessageResponse = new MessageResponse();
-
   modalRef?: BsModalRef;
 
   constructor(
+    private fb: FormBuilder,
     private modalService: BsModalService,
-    private fareCalculatorService: FareCalculatorService,
     private httpService: HttpService,
-    private dropdownService: DropdownService
-  ) {}
+    private searchInputBoxServicce: SearchInputBoxService
+  ) {
+    this.form = this.fb.group({
+      source: ['', [Validators.required]],
+      destination: ['', Validators.required],
+      type: [1, Validators.required],
+    });
+  }
 
   ngOnInit(): void {
     this.loadStations();
@@ -87,7 +70,7 @@ export class InputBoxComponent implements OnInit {
   }
 
   selectedType(type: number): void {
-    this.type = type;
+    this.form.patchValue({ type });
   }
 
   openModal(template: TemplateRef<void>): void {
@@ -99,10 +82,14 @@ export class InputBoxComponent implements OnInit {
   }
 
   private loadStations(): void {
-    this.dropdownService.getStations().subscribe(
+    this.searchInputBoxServicce.getStations().subscribe(
       (response: HttpResponse<any>) => {
+        console.log(response);
+        
         if (this.httpService.isResponseOk(response.status)) {
           this.stations = response.body;
+          console.log(this.stations);
+          
         }
       },
       (httpErrorResponse: HttpErrorResponse) => {
@@ -112,7 +99,7 @@ export class InputBoxComponent implements OnInit {
   }
 
   private loadType(): void {
-    this.dropdownService.getType().subscribe(
+    this.searchInputBoxServicce.getType().subscribe(
       (response: HttpResponse<any>) => {
         if (this.httpService.isResponseOk(response.status)) {
           this.types = response.body;
@@ -124,14 +111,26 @@ export class InputBoxComponent implements OnInit {
     );
   }
 
+  onSelectSource(event: any): void {
+    console.log(event.item.stationName);
+    
+    this.form.get('source')?.setValue(event.item.stationName);
+  }
+
+  onSelectDestination(event: any): void {
+    this.form.get('destination')?.setValue(event.item.stationName);
+  }
+
   callCalculate(responseModalTemplate: any): void {
+    console.log(this.form)
+    this.messageResponse.clearMessage();
     const fareCalculatorRequest = new FareCalculatorRequest(
-      this.source,
-      this.destination,
-      this.type
+      this.form.value.source,
+      this.form.value.destination,
+      this.form.value.type
     );
 
-    this.fareCalculatorService.calculateFare(fareCalculatorRequest).subscribe(
+    this.searchInputBoxServicce.calculateFare(fareCalculatorRequest).subscribe(
       (response: HttpResponse<any>) => {
         if (this.httpService.isResponseOk(response.status)) {
           this.responseData = response.body;

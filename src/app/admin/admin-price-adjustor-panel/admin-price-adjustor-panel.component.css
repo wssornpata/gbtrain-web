@@ -1,5 +1,6 @@
 .body-content {
   height: auto;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +12,7 @@
 
 .admin-table {
   margin-top: 3em;
-  max-width: 70%;
+  min-width: 1080px;
 }
 
 .function-button {

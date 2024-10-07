@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { FareCalculatorRequest } from './dtop/request/fare-calculator-request.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class DropdownService {
+export class SearchInputBoxService {
   constructor(private http: HttpClient) {}
 
   getType(): Observable<HttpResponse<any>> {
@@ -19,6 +20,14 @@ export class DropdownService {
   getStations(): Observable<HttpResponse<any>> {
     return this.http.get<HttpResponse<any>>(
       `${environment.BASEURL_DROPDOWN}/station`,
+      { observe: 'response' }
+    );
+  }
+  
+  calculateFare(fareCalculatorRequest: FareCalculatorRequest): Observable<HttpResponse<any>> {
+    return this.http.post<any>(
+      `${environment.BASEURL_CALCULATOR}/calculatefare`,
+      fareCalculatorRequest,
       { observe: 'response' }
     );
   }

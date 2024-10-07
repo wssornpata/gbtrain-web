@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { AdminPriceAdjustorPanelComponent } from '../admin-price-adjustor-panel/admin-price-adjustor-panel.component';
-import { AdminTransactionComponent } from '../admin-transaction/admin-transaction.component';
+import { AdminPriceAdjustorPanelComponent } from './admin-price-adjustor-panel/admin-price-adjustor-panel.component';
 import { RouterModule } from '@angular/router';
+import { AdminTransactionComponent } from './admin-price-adjustor-panel/admin-transaction/admin-transaction.component';
 
 @Component({
   selector: 'app-admin',

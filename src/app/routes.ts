@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
 import { AdminComponent } from './admin/admin.component';
 import { SearchComponent } from './search/search.component';
-import { AdminTransactionComponent } from './admin-transaction/admin-transaction.component';
+import { AdminTransactionComponent } from './admin/admin-price-adjustor-panel/admin-transaction/admin-transaction.component';
 
 const routes: Routes = [
   {

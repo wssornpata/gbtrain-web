@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 @NgModule({
   imports: [
@@ -10,6 +11,7 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     AppComponent,
     HttpClientModule,
+    TypeaheadModule.forRoot(),
   ],
   bootstrap: [],
 })

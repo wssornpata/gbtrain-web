@@ -1,0 +1,75 @@
+<div
+    class="pt-5 d-flex flex-column justify-content-center align-item-center body-content">
+    <div>
+        <h1>Price-Adjustor Panel</h1>
+    </div>
+
+    <form [formGroup]="priceAdjustorForm">
+        <table class="table table-bordered admin-table text-center">
+            <thead>
+                <tr>
+                    <th scope="col" class="col-md-2">#</th>
+                    <th scope="col" class="col-2">Distance(Gap)</th>
+                    <th scope="col" class="col-2">Description</th>
+                    <th scope="col" class="col-2">Price</th>
+                    <th scope="col" class="col-4">Last updated</th>
+                </tr>
+            </thead>
+            <tbody formArrayName="fareRates">
+                <tr
+                    *ngFor="let fareRate of fareRatesFormArray.controls; let i = index"
+                    [formGroupName]="i">
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>{{ fareRate.get('distance')?.value }}</td>
+                    <td>
+                        <input type="text" formControlName="description" placeholder="Enter description">
+                        <div *ngIf="fareRate.get('description')?.invalid && (fareRate.get('description')?.dirty || fareRate.get('description')?.touched)">
+                            <small class="text-danger" *ngIf="fareRate.get('description')?.errors?.['required']">Description is required.</small>
+                            <small class="text-danger" *ngIf="fareRate.get('description')?.errors?.['max']">Description must be smaller than 255.</small>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" formControlName="price" placeholder="Enter price">
+                        <div *ngIf="fareRate.get('price')?.invalid && (fareRate.get('price')?.dirty || fareRate.get('price')?.touched)">
+                            <small class="text-danger" *ngIf="fareRate.get('price')?.errors?.['required']">Price is required.</small>
+                            <small class="text-danger" *ngIf="fareRate.get('price')?.errors?.['min']">Price must be greater than 0.</small>
+                        </div>
+                    </td>
+                    <td>{{ dateService.formatDate(fareRate.get('updateDatetime')?.value) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="12">
+                        <div class="d-flex justify-content-center mt-1">
+                            <button type="button"
+                                class="btn btn-primary function-button"
+                                (click)="openModal(confirmModal)">Save</button>
+                            <br><br>
+                            <button class="ml-5 btn btn-danger function-button"
+                                (click)="loadFareRate()">Clear</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<ng-template #confirmModal>
+    <div class="modal-body text-center">
+        <p>Do you want to confirm?</p>
+        <div class="d-flex align-items-center justify-content-around">
+            <button type="button" class="btn btn-primary"
+                (click)="onConfirm(); openModal(responseModal)">Yes</button>
+            <button type="button" class="btn btn-danger"
+                (click)="onDecline()">No</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #responseModal>
+    <div *ngIf="messageResponse" class="modal-body text-center">
+        <p>{{ messageResponse.message }}</p>
+        <button type="button" class="btn btn-primary"
+            (click)="closeModal()">Close</button>
+    </div>
+</ng-template>

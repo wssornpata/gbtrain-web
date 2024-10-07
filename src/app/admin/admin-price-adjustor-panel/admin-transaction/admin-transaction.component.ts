@@ -6,17 +6,17 @@ import {
 } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TransactionModel } from '../model/transaction-model';
+import { TransactionModel } from '../../../model/transaction-model';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { TransactionService } from '../services/transaction.service';
-import { HttpService } from '../services/http.service';
-import { DateService } from '../services/date.service';
+import { HttpService } from '../../../services/http.service';
+import { DateService } from '../../../services/date.service';
+import { AdminTransactionService } from './admin-transaction.service';
 
 @Component({
   selector: 'app-admin-transaction',
   standalone: true,
   imports: [HttpClientModule, CommonModule, FormsModule, PaginationModule],
-  providers: [TransactionService, DateService, DatePipe, HttpService],
+  providers: [AdminTransactionService, DateService, DatePipe, HttpService],
   templateUrl: './admin-transaction.component.html',
   styleUrl: './admin-transaction.component.css',
 })
@@ -29,7 +29,7 @@ export class AdminTransactionComponent implements OnInit {
   searchCriteria: string = '';
 
   constructor(
-    private transactionService: TransactionService,
+    private adminTransactionService: AdminTransactionService,
     public dateService: DateService,
     private httpService: HttpService
   ) {}
@@ -39,7 +39,7 @@ export class AdminTransactionComponent implements OnInit {
   }
 
   private loadTransactions(): void {
-    this.transactionService.getTransactions().subscribe(
+    this.adminTransactionService.getTransactions().subscribe(
       (response: HttpResponse<any>) => {
         if (this.httpService.isResponseOk(response.status)) {
           this.transactions = response.body;

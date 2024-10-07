@@ -1,13 +1,14 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { PriceAdjustorRequest } from '../dto/admin/request/price-adjustor-request';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { FareCalculatorRequest } from '../../search/search-input-box/dtop/request/fare-calculator-request.model';
+import { PriceAdjustorRequest } from '../request/price-adjustor-request';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class PriceAdjustorService {
+export class AdminTransactionService {
   constructor(private http: HttpClient) {}
 
   getRate(): Observable<HttpResponse<any>> {

@@ -1,16 +1,12 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-
+import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class TransactionService {
-
-  constructor(
-    private http: HttpClient,
-  ) { }
+export class AdminTransactionService {
+  constructor(private http: HttpClient) {}
 
   getTransactions(): Observable<HttpResponse<any>> {
     return this.http.get<HttpResponse<any>>(
