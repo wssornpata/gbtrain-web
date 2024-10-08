@@ -101,7 +101,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
     this.messageResponse.clearMessage();
     this.adminTransactionService
       .postPriceAdjustment(priceAdjustorRequestList)
-      .subscribe(
+      .subscribe( 
         (response: HttpResponse<any>) => {
           this.messageResponse.setMessage('Success');
         },

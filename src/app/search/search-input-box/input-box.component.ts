@@ -35,11 +35,7 @@ import { SearchInputBoxService } from './searchInputBox.service';
     AlertModule,
     ModalModule,
   ],
-  providers: [
-    AlertConfig,
-    BsModalService,
-    SearchInputBoxService,
-  ],
+  providers: [AlertConfig, BsModalService, SearchInputBoxService],
   templateUrl: './input-box.component.html',
   styleUrls: ['./input-box.component.css'],
 })
@@ -58,8 +54,14 @@ export class InputBoxComponent implements OnInit {
     private searchInputBoxServicce: SearchInputBoxService
   ) {
     this.form = this.fb.group({
-      source: ['', [Validators.required]],
-      destination: ['', Validators.required],
+      source: [
+        '',
+        [Validators.required, Validators.maxLength(5)],
+      ],
+      destination: [
+        '',
+        [Validators.required, Validators.maxLength(5)],
+      ],
       type: [1, Validators.required],
     });
   }
@@ -84,12 +86,8 @@ export class InputBoxComponent implements OnInit {
   private loadStations(): void {
     this.searchInputBoxServicce.getStations().subscribe(
       (response: HttpResponse<any>) => {
-        console.log(response);
-        
         if (this.httpService.isResponseOk(response.status)) {
           this.stations = response.body;
-          console.log(this.stations);
-          
         }
       },
       (httpErrorResponse: HttpErrorResponse) => {
@@ -112,8 +110,6 @@ export class InputBoxComponent implements OnInit {
   }
 
   onSelectSource(event: any): void {
-    console.log(event.item.stationName);
-    
     this.form.get('source')?.setValue(event.item.stationName);
   }
 
@@ -122,7 +118,6 @@ export class InputBoxComponent implements OnInit {
   }
 
   callCalculate(responseModalTemplate: any): void {
-    console.log(this.form)
     this.messageResponse.clearMessage();
     const fareCalculatorRequest = new FareCalculatorRequest(
       this.form.value.source,

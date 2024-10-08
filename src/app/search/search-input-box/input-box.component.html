@@ -20,6 +20,14 @@
 					(typeaheadOnSelect)="onSelectSource($event)"
 					class="form-control"
 					placeholder="Enter source" />
+				<div
+					*ngIf="form.get('source')?.invalid && (form.get('source')?.dirty || form.get('source')?.touched)"
+					class="text-danger">
+					<div *ngIf="form.get('source')?.errors?.['required']">Source is
+						required.</div>
+					<div *ngIf="form.get('source')?.errors?.['maxLength']">Source cannot be
+						more than 5 characters long.</div>
+				</div>
 			</div>
 			<div class="mb-5">
 				<label for="destination">Destination:</label>
@@ -33,9 +41,16 @@
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
 					(typeaheadOnSelect)="onSelectDestination($event)"
-					value=destinationValue
 					class="form-control"
 					placeholder="Enter Destination" />
+				<div
+					*ngIf="form.get('destination')?.invalid && (form.get('destination')?.dirty || form.get('destination')?.touched)"
+					class="text-danger">
+					<div *ngIf="form.get('destination')?.errors?.['required']">Destination is
+						required.</div>
+					<div *ngIf="form.get('destination')?.errors?.['maxLength']">Destination
+						cannot be more than 5 characters long.</div>
+				</div>
 			</div>
 			<div class="alert-text">
 				<alert *ngIf="messageResponse.message" type="danger" class="mt-2">
@@ -58,9 +73,12 @@
 								{{type.description}}</a>
 						</li>
 					</ul>
+					<div *ngIf="form.get('type')?.errors?.['maxLength']">Destination
+						cannot be more than 5 characters long.</div>
 				</div>
 				<div>
-					<button class="btn btn-primary submit-button" type="submit">Submit</button>
+					<button class="btn btn-primary submit-button" type="submit"
+						[disabled]="form.invalid">Submit</button>
 				</div>
 			</div>
 		</div>
