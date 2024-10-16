@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TransactionModel } from '../../../model/transaction-model';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { HttpService } from '../../../services/http.service';
+import { ErrorHandlingService } from '../../../services/errorhandling.service';
 import { DateService } from '../../../services/date.service';
 import { AdminTransactionService } from './admin-transaction.service';
 
@@ -16,7 +16,7 @@ import { AdminTransactionService } from './admin-transaction.service';
   selector: 'app-admin-transaction',
   standalone: true,
   imports: [HttpClientModule, CommonModule, FormsModule, PaginationModule],
-  providers: [AdminTransactionService, DateService, DatePipe, HttpService],
+  providers: [AdminTransactionService, DateService, DatePipe],
   templateUrl: './admin-transaction.component.html',
   styleUrl: './admin-transaction.component.css',
 })
@@ -31,25 +31,22 @@ export class AdminTransactionComponent implements OnInit {
   constructor(
     private adminTransactionService: AdminTransactionService,
     public dateService: DateService,
-    private httpService: HttpService
+    private errorHandlingService: ErrorHandlingService
   ) {}
 
   ngOnInit(): void {
     this.loadTransactions();
   }
 
-  private loadTransactions(): void {
-    this.adminTransactionService.getTransactions().subscribe(
-      (response: HttpResponse<any>) => {
-        if (this.httpService.isResponseOk(response.status)) {
-          this.transactions = response.body;
-          this.applyFilter();
-        }
-      },
-      (httpErrorResponse: HttpErrorResponse) => {
-        console.error('Error loading transactions:', httpErrorResponse);
-      }
-    );
+  private async loadTransactions(): Promise<void> {
+    try {
+      const response: HttpResponse<any> =
+        await this.adminTransactionService.getTransactions();
+		this.transactions = response.body;
+		this.applyFilter();
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
   }
 
   applyFilter(): void {

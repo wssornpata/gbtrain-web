@@ -20,7 +20,7 @@ import { StationModel } from '../../model/station-model';
 import { TypeModel } from '../../model/type-model';
 import { MessageResponse } from '../../dto/error/response/error-message-response';
 import { FareCalculatorResponse } from './dtop/response/fare-calculator-response.model';
-import { HttpService } from '../../services/http.service';
+import { ErrorHandlingService } from '../../services/errorhandling.service';
 import { SearchInputBoxService } from './searchInputBox.service';
 
 @Component({
@@ -50,18 +50,12 @@ export class InputBoxComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modalService: BsModalService,
-    private httpService: HttpService,
-    private searchInputBoxServicce: SearchInputBoxService
+    private errorHandlingService: ErrorHandlingService,
+    private searchInputBoxService: SearchInputBoxService
   ) {
     this.form = this.fb.group({
-      source: [
-        '',
-        [Validators.required, Validators.maxLength(5)],
-      ],
-      destination: [
-        '',
-        [Validators.required, Validators.maxLength(5)],
-      ],
+      source: ['', [Validators.required, Validators.maxLength(5)]],
+      destination: ['', [Validators.required, Validators.maxLength(5)]],
       type: [1, Validators.required],
     });
   }
@@ -83,30 +77,24 @@ export class InputBoxComponent implements OnInit {
     this.modalRef?.hide();
   }
 
-  private loadStations(): void {
-    this.searchInputBoxServicce.getStations().subscribe(
-      (response: HttpResponse<any>) => {
-        if (this.httpService.isResponseOk(response.status)) {
-          this.stations = response.body;
-        }
-      },
-      (httpErrorResponse: HttpErrorResponse) => {
-        console.error('Error loading stations:', httpErrorResponse);
-      }
-    );
+  private async loadStations(): Promise<void> {
+    try {
+      const response: HttpResponse<any> =
+        await this.searchInputBoxService.getStations();
+      this.stations = response.body;
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
   }
 
-  private loadType(): void {
-    this.searchInputBoxServicce.getType().subscribe(
-      (response: HttpResponse<any>) => {
-        if (this.httpService.isResponseOk(response.status)) {
-          this.types = response.body;
-        }
-      },
-      (httpErrorResponse: HttpErrorResponse) => {
-        console.error('Error loading types:', httpErrorResponse);
-      }
-    );
+  private async loadType(): Promise<void> {
+    try {
+      const response: HttpResponse<any> =
+        await this.searchInputBoxService.getType();
+      this.stations = response.body;
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
   }
 
   onSelectSource(event: any): void {
@@ -117,7 +105,7 @@ export class InputBoxComponent implements OnInit {
     this.form.get('destination')?.setValue(event.item.stationName);
   }
 
-  callCalculate(responseModalTemplate: any): void {
+  async callCalculate(responseModalTemplate: any): Promise<void> {
     this.messageResponse.clearMessage();
     const fareCalculatorRequest = new FareCalculatorRequest(
       this.form.value.source,
@@ -125,17 +113,13 @@ export class InputBoxComponent implements OnInit {
       this.form.value.type
     );
 
-    this.searchInputBoxServicce.calculateFare(fareCalculatorRequest).subscribe(
-      (response: HttpResponse<any>) => {
-        if (this.httpService.isResponseOk(response.status)) {
-          this.responseData = response.body;
-          this.openModal(responseModalTemplate);
-        }
-      },
-      (httpErrorResponse: HttpErrorResponse) => {
-        console.error('Error loading types:', httpErrorResponse);
-        this.messageResponse.setMessage(httpErrorResponse.error.message);
-      }
-    );
+    try {
+      const response: HttpResponse<any> =
+        await this.searchInputBoxService.calculateFare(fareCalculatorRequest);
+		this.responseData = response.body;
+		this.openModal(responseModalTemplate);
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
   }
 }

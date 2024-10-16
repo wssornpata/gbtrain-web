@@ -18,6 +18,7 @@ import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { MessageResponse } from '../../dto/error/response/error-message-response';
 import { DateService } from '../../services/date.service';
 import { AdminTransactionService } from './admin-price-adjustor.service';
+import { ErrorHandlingService } from '../../services/errorhandling.service';
 
 @Component({
   selector: 'app-admin-price-adjustor-panel',
@@ -35,6 +36,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   constructor(
     private modalService: BsModalService,
     private adminTransactionService: AdminTransactionService,
+    private errorHandlingService: ErrorHandlingService,
     public dateService: DateService,
     private fb: FormBuilder
   ) {
@@ -70,16 +72,17 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
     this.closeModal();
   }
 
-  loadFareRate(): void {
-    this.adminTransactionService.getRate().subscribe(
-      (response: HttpResponse<any>) => {
-        const fareRates = response.body;
-        this.initializeForm(fareRates);
-      },
-      (httpErrorResponse: HttpErrorResponse) => {
-        console.error('Error occurred:', httpErrorResponse);
-      }
-    );
+  async loadFareRate(): Promise<void> {
+    try {
+      const response: HttpResponse<any> =
+        await this.adminTransactionService.getRate();
+      const fareRates = response.body;
+      console.log(fareRates);
+      
+      this.initializeForm(fareRates);
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
   }
 
   initializeForm(fareRates: FareRateModel[]): void {
@@ -89,7 +92,10 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
           id: [fareRate.id],
           distance: [fareRate.distance],
           price: [fareRate.price, [Validators.required, Validators.min(0)]],
-          description: [fareRate.description, [Validators.required, Validators.max(255)]],
+          description: [
+            fareRate.description,
+            [Validators.required, Validators.max(255)],
+          ],
           updateDatetime: [fareRate.updateDatetime],
         })
       )
@@ -97,21 +103,17 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
     this.priceAdjustorForm.setControl('fareRates', fareRatesFormArray);
   }
 
-  adjustPrices(priceAdjustorRequestList: PriceAdjustorRequest[]) {
-    this.messageResponse.clearMessage();
-    this.adminTransactionService
-      .postPriceAdjustment(priceAdjustorRequestList)
-      .subscribe( 
-        (response: HttpResponse<any>) => {
-          this.messageResponse.setMessage('Success');
-        },
-        (httpErrorResponse: HttpErrorResponse) => {
-          this.messageResponse.setMessage(
-            httpErrorResponse.error.status + ' ' + httpErrorResponse.error.error
-          );
-          console.error('Error occurred:', httpErrorResponse);
-        }
+  async adjustPrices(
+    priceAdjustorRequestList: PriceAdjustorRequest[]
+  ): Promise<void> {
+    try {
+      const response = await this.adminTransactionService.postPriceAdjustment(
+        priceAdjustorRequestList
       );
+      this.messageResponse.setMessage('Success');
+    } catch (error) {
+      this.messageResponse.setMessage('Error');
+    }
   }
 
   private wrapperFareRateRequestList(): PriceAdjustorRequest[] {

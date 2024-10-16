@@ -15,8 +15,7 @@ export class AdminService {
   ): Observable<HttpResponse<any>> {
     return this.http.post<any>(
       `${environment.BASEURL_CALCULATOR}/calculatefare`,
-      fareCalculatorRequest,
-      { observe: 'response' }
+      fareCalculatorRequest
     );
   }
 }
