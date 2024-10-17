@@ -6,17 +6,20 @@ import { MessageResponse } from '../dto/error/response/error-message-response';
   providedIn: 'root',
 })
 export class ErrorHandlingService {
-  handleError(error: any): MessageResponse  {
+  handleError(error: any): MessageResponse {
     console.error('Error occurred:', error);
 
     if (error instanceof HttpErrorResponse) {
       if (error.status === 0) {
-        return new MessageResponse(`Network error : ${error}`);
+        return new MessageResponse(error.error, 'Network error');
       } else {
-        return new MessageResponse(error.error.message);
+        return new MessageResponse(
+          error.error.messageHeader,
+          error.error.message
+        );
       }
     } else {
-      return new MessageResponse(`An unexpected error occurred: ${error}`)
+      return new MessageResponse(error.error, 'An unexpected error occurred');
     }
   }
 }

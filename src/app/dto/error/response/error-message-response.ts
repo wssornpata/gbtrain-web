@@ -1,11 +1,14 @@
 export interface MessageResponseInterface {
+    messageHeader: string;
     message: string;
 }
 
 export class MessageResponse implements MessageResponseInterface {
+    messageHeader: string;
     message: string;
 
-    constructor(message: string = '') {
+    constructor(message: string = '', messageHeader: string = '') {
+        this.messageHeader = messageHeader;
         this.message = message;
     }
 
