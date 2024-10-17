@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
   templateUrl: './search-route-img.component.html',
   styleUrls: ['./search-route-img.component.css']
 })
+
 export class SearchRouteImgComponent {
   imageSrc = '../../assets/img/RouteMap.jpg';
   scale = 1.4;

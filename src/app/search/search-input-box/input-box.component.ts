@@ -15,11 +15,11 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AlertConfig, AlertModule } from 'ngx-bootstrap/alert';
 import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { FareCalculatorRequest } from './dtop/request/fare-calculator-request.model';
+import { FareCalculatorRequest } from './dto/request/fare-calculator-request.model';
 import { StationModel } from '../../model/station-model';
 import { TypeModel } from '../../model/type-model';
 import { MessageResponse } from '../../dto/error/response/error-message-response';
-import { FareCalculatorResponse } from './dtop/response/fare-calculator-response.model';
+import { FareCalculatorResponse } from './dto/response/fare-calculator-response.model';
 import { ErrorHandlingService } from '../../services/errorhandling.service';
 import { SearchInputBoxService } from './searchInputBox.service';
 
@@ -116,8 +116,8 @@ export class InputBoxComponent implements OnInit {
     try {
       const response: HttpResponse<any> =
         await this.searchInputBoxService.calculateFare(fareCalculatorRequest);
-		this.responseData = response.body;
-		this.openModal(responseModalTemplate);
+      this.responseData = response.body;
+      this.openModal(responseModalTemplate);
     } catch (error) {
       this.errorHandlingService.handleError(error);
     }

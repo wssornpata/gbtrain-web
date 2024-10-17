@@ -17,6 +17,7 @@
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
+					typeaheadGroupField="colorMappingEntity.colorFullname"
 					(typeaheadOnSelect)="onSelectSource($event)"
 					class="form-control"
 					placeholder="Enter source" />
@@ -40,6 +41,7 @@
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
+					typeaheadGroupField="colorMappingEntity.colorFullname"
 					(typeaheadOnSelect)="onSelectDestination($event)"
 					class="form-control"
 					placeholder="Enter Destination" />
@@ -57,9 +59,6 @@
 					{{ messageResponse.message }}
 				</alert>
 			</div>
-			<ng-template #customTemplate let-model="item">
-				{{ model.stationFullname }}
-			</ng-template>
 			<div class="mt-2 d-flex justify-content-between">
 				<div class="position-relative" dropdown>
 					<button id="button-basic" dropdownToggle type="button"
@@ -84,6 +83,10 @@
 		</div>
 	</div>
 </form>
+
+<ng-template #customTemplate let-model="item">
+	{{ model.stationFullname }}
+</ng-template>
 
 <ng-template #responseModalTemplate>
 	<div class="modal-header">
