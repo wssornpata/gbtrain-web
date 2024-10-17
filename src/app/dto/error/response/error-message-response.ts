@@ -5,8 +5,8 @@ export interface MessageResponseInterface {
 export class MessageResponse implements MessageResponseInterface {
     message: string;
 
-    constructor() {
-        this.message = '';
+    constructor(message: string = '') {
+        this.message = message;
     }
 
     getMessage(): string {

@@ -1,25 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MessageResponse } from '../dto/error/response/error-message-response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorHandlingService {
-  handleError(error: any): void {
+  handleError(error: any): MessageResponse  {
     console.error('Error occurred:', error);
 
     if (error instanceof HttpErrorResponse) {
       if (error.status === 0) {
-        console.error('Network error:', error.message);
+        return new MessageResponse(`Network error : ${error}`);
       } else {
-        console.error(
-          `Backend returned code ${error.status}, body was:`,
-          error.error
-        );
+        return new MessageResponse(error.error.message);
       }
     } else {
-      console.error('An unexpected error occurred:', error);
+      return new MessageResponse(`An unexpected error occurred: ${error}`)
     }
   }
-
 }

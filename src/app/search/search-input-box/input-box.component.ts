@@ -91,7 +91,7 @@ export class InputBoxComponent implements OnInit {
     try {
       const response: HttpResponse<any> =
         await this.searchInputBoxService.getType();
-      this.stations = response.body;
+      this.types = response.body;
     } catch (error) {
       this.errorHandlingService.handleError(error);
     }

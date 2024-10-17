@@ -12,7 +12,10 @@ export class SearchInputBoxService {
 
   getType(): Promise<HttpResponse<any>> {
     return firstValueFrom(
-      this.http.get<HttpResponse<any>>(`${environment.BASEURL_DROPDOWN}/type`)
+      this.http.get<HttpResponse<any>>(
+        `${environment.BASEURL_DROPDOWN}/type`, 
+        { observe: 'response'}
+      )
     );
   }
 

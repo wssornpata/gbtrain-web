@@ -78,7 +78,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
         await this.adminTransactionService.getRate();
       const fareRates = response.body;
       console.log(fareRates);
-      
+
       this.initializeForm(fareRates);
     } catch (error) {
       this.errorHandlingService.handleError(error);
@@ -107,12 +107,12 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
     priceAdjustorRequestList: PriceAdjustorRequest[]
   ): Promise<void> {
     try {
-      const response = await this.adminTransactionService.postPriceAdjustment(
+      await this.adminTransactionService.postPriceAdjustment(
         priceAdjustorRequestList
       );
       this.messageResponse.setMessage('Success');
     } catch (error) {
-      this.messageResponse.setMessage('Error');
+      this.messageResponse = this.errorHandlingService.handleError(error);
     }
   }
 
