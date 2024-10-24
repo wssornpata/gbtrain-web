@@ -1,26 +1,26 @@
 export interface FareCalculatorRequestInterface {
-  source: string;
+  origin: string;
   destination: string;
   type: number;
 }
 
 export class FareCalculatorRequest implements FareCalculatorRequestInterface {
-  source: string;
+  origin: string;
   destination: string;
   type: number;
 
-  constructor(source: string = '', destination: string = '', type: number = 0) {
-    this.source = source;
+  constructor(origin: string = '', destination: string = '', type: number = 0) {
+    this.origin = origin;
     this.destination = destination;
     this.type = type;
   }
 
-  getSource(): string {
-    return this.source;
+  getOrigin(): string {
+    return this.origin;
   }
 
-  setSource(value: string): void {
-    this.source = value;
+  setOrigin(value: string): void {
+    this.origin = value;
   }
 
   getDestination(): string {

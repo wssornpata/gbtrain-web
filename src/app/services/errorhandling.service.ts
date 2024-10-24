@@ -5,6 +5,7 @@ import { MessageResponse } from '../dto/error/response/error-message-response';
 @Injectable({
   providedIn: 'root',
 })
+
 export class ErrorHandlingService {
   handleError(error: any): MessageResponse {
     console.error('Error occurred:', error);
@@ -15,7 +16,7 @@ export class ErrorHandlingService {
       } else {
         return new MessageResponse(
           error.error.messageHeader,
-          error.error.message
+          error.error.messasge
         );
       }
     } else {

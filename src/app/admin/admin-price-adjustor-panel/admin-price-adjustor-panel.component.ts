@@ -110,6 +110,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
       await this.adminTransactionService.postPriceAdjustment(
         priceAdjustorRequestList
       );
+      this.loadFareRate();
       this.messageResponse.setMessage('Success');
     } catch (error) {
       this.messageResponse = this.errorHandlingService.handleError(error);

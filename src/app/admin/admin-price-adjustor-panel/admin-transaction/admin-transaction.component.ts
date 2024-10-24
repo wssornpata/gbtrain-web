@@ -53,7 +53,7 @@ export class AdminTransactionComponent implements OnInit {
     if (this.searchCriteria) {
       this.filteredTransactions = this.transactions.filter(
         (transaction) =>
-          transaction.source.includes(this.searchCriteria) ||
+          transaction.origin.includes(this.searchCriteria) ||
           transaction.destination.includes(this.searchCriteria)
       );
     } else {

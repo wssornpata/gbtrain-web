@@ -1,22 +1,55 @@
 #dropdown-basic {
-    max-height: 200px;
-    overflow-y: auto;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .dropdown-item {
-    padding: 10px 20px;
-    cursor: pointer;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.topic{
+    font-weight: bold;
 }
 
 .dropdown-item:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 ::ng-deep .dropdown-menu {
-    max-height: 400px;
-    overflow-y: auto;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.alert-text{
-    width: 330px;
+.alert-text {
+  width: 330px;
+}
+
+.dropdown-header {
+  font-size: 100px;
+}
+
+.rabbitcard {
+  width: 50px;
+}
+
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+::ng-deep .dropdown-header{
+    font-size: 20px;
+    font-weight: bold;
+    color: darkgreen;
 }

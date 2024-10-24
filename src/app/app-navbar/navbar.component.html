@@ -1,18 +1,51 @@
-<header id="header" class="fixed-top">
-    <div class="bg-white container-fluid position-relative d-flex align-items-center justify-content-between">
+<!-- <header id="header" class="fixed-top">
+    <div
+        class="bg-white container-fluid position-relative d-flex align-items-center justify-content-between">
 
-        <a routerLink="/" class="logo d-flex align-items-center text-decoration-none">
+        <a routerLink="/"
+            class="logo d-flex align-items-center text-decoration-none">
             <h1>GBTrain</h1><span></span>
         </a>
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a routerLink="/" class="text-decoration-none">Home</a></li>
-                <li><a routerLink="/search" class="text-decoration-none">Search</a></li>
-                <li><a routerLink="/admin" class="text-decoration-none">Admin</a></li>
+                <li><a routerLink="/"
+                        class="text-decoration-none active">Home</a></li>
+                <li><a routerLink="/search"
+                        class="text-decoration-none">Search</a></li>
+                <li><a routerLink="/admin"
+                        class="text-decoration-none">Admin</a></li>
             </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
         <a class="btn btn-danger" routerLink="/search">Get Started</a>
+    </div>
+</header> -->
+
+<header id="header" class="header d-flex align-items-center fixed-top">
+    <div
+        class="h-100 container-fluid container-xl position-relative d-flex align-items-center justify-content-around">
+
+        <a routerLink="/"
+            class="sitename">
+            <div class="logo">
+                <h1>GB-Train</h1>
+                <img class="logo-pic" src="../../assets/img/skytrain.png" alt>
+            </div>
+        </a>
+        <nav id="navmenu" class="navmenu ml-lg-5">
+            <ul>
+                <li><a routerLink="/"
+                        class="text-decoration-none  active">Home</a></li>
+                <li><a routerLink="/search"
+                        class="text-decoration-none">Search</a></li>
+                <li><a routerLink="/admin"
+                        class="text-decoration-none">Admin</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+        <a class="btn btn-getstarted" routerLink="#">Login</a>
     </div>
 </header>

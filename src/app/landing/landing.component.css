@@ -1,33 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
+
 .body-content {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.left-column, .right-column {
-    width: 100%;
-    height: 100%;
-    display: flex;
+:root {
+  --primary-color: #00605f;
+  --secondary-color: #017479;
+  --text-dark: #0f172a;
+  --text-light: #94a3b8;
+  --white: #ffffff;
+  --max-width: 1400px;
 }
 
-.container-fluid{
-    padding: 0;
+body {
+  font-family: "Montserrat", sans-serif;
+  background: linear-gradient(
+      to right,
+      rgba(80, 89, 123, 0.9),
+      rgba(255, 255, 255, 0)
+    ),
+    url("../../assets/img/Bangkok-BTS-Skytrain.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.left-column,
+.right-column {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
+.destination__container {
+  position: relative;
+  padding: 13rem 0 5rem 2rem;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.socials {
+  position: absolute;
+  top: 30rem;
+  left: -100px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.socials::after {
+  position: absolute;
+  content: "";
+  top: -22rem;
+  left: 15px;
+  height: 15rem;
+  width: 2px;
+  background-color: var(--white);
+}
+
+.socials span {
+  font-size: 2rem;
+  color: var(--white);
+}
+
+.content h1 {
+  margin-bottom: 1rem;
+  font-size: 4.5rem;
+  font-weight: 800;
+  color: var(--white);
+}
+
+.content h1 span {
+  -webkit-text-stroke: 2px var(--white);
+  -webkit-text-fill-color: transparent;
+}
+
+.content p {
+  max-width: 350px;
+  margin-bottom: 2rem;
+  line-height: 1.5rem;
+  color: var(--white);
 }
 
 
-.show-img-user:hover {
-    background-image: url('C:/Users/SornpatAmthiangtham/Downloads/user.png');
-    transition:  2s ease;
-    background-size: cover;
-    background-position: center;
-    color: transparent;
+.destination__grid {
+    margin-left: 30px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
 }
 
-.show-img-admin:hover {
-    background-image: url('C:/Users/SornpatAmthiangtham/Downloads/admin.png');
-    transition:  2s ease;
-    background-size: cover;
-    background-position: center;
-    color: transparent;
+.destination__card {
+  height: 100%;
+  background-color: var(--white);
+  padding: 10px;
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.7);
+}
+
+.destination__card img {
+  width: 100%;
+}
+
+.card__content {
+  padding: 1rem;
+}
+
+.card__content h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.card__content p {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5rem;
+  color: var(--text-light);
+}
+
+.card__content .btn {
+    text-align: left;
 }

@@ -1,52 +1,87 @@
-.navmenu {
-    padding: 0;
-    display: flex;
-    justify-content: flex-start;
-    flex-grow: 0;
+body {
+  height: 100vh;
+  top: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.navmenu ul {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    list-style: none;
-    align-items: center;
-    justify-content: center;
+header {
+  padding-top: 1%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
+
+.sitename {
+  margin: 0;
+  text-decoration: none;
+}
+
+.sitename div:hover {
+  filter: brightness(0);
+}
+
+.logo {
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.logo h1 {
+  color: rgb(255, 255, 255);
+  font-size: 40px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.logo-pic {
+  filter: brightness(0) invert(1);
+  height: 40px;
+}
+
 
 .navmenu a,
 .navmenu a:focus {
-    padding: 18px 15px;
-    font-size: 16px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    white-space: nowrap;
-    transition: 0.3s;
-}
-
-.navmenu a i,
-.navmenu a:focus i {
-    font-size: 12px;
-    line-height: 0;
-    margin-left: 5px;
-    transition: 0.3s;
+  padding: 0px 0px 0px 20px;
+  font-size: 18px;
+  color: rgb(255, 255, 255);
+  font-weight: 400;
+  transition: 0.3s;
 }
 
 .navmenu li:last-child a {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 .navmenu li:hover > a {
-    color: black;
+  color: rgb(0, 0, 0);
+  font-weight: bolder;
+}
+
+.navmenu {
+  height: 100%;
+}
+
+.navmenu ul {
+  height: 48px;
+  display: flex;
+  align-items: end;
+  list-style: none;
+  flex-direction: row;
 }
 
 .btn-getstarted {
-    margin-left: auto;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
+  margin-left: auto;
+  font-weight: 400;
+  padding: 7px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+  
+  background-color: rgb(229, 55, 55);
+  color: rgb(255, 255, 255);
+}
+
+.btn-getstarted div:hover {
+  background-color: rgb(255, 255, 255);
+  color: rgb(220, 220, 220);
 }

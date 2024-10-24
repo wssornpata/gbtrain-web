@@ -6,9 +6,14 @@
   height: 100%;
 }
 
+.magnifier{
+  width: 50px;
+}
+
 .zoom-button {
-  top: 25em;
-  right: 1em;
+  position: absolute;
+  top: 400px;
+  right: 190px;
 }
 
 .zoomable-img {
@@ -17,12 +22,16 @@
   max-height: 100vh;
 }
 
+.btn .bg-lightblue,.bg-lightcoral{
+  border: 1px black;
+}
+
 .bg-lightblue {
   background-color: lightblue;
   padding: 10px;
 }
 
-.bg-lightcoral {
-  background-color: lightcoral;
+.bg-lightgrey {
+  background-color: rgb(192, 191, 191);
   padding: 10px;
 }

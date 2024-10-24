@@ -13,7 +13,7 @@ export class SearchRouteImgComponent {
   scale = 1.4;
 
   zoomIn() {
-    this.scale += 0.1;
+    this.scale = Math.min(2.3, this.scale + 0.1);
   }
 
   zoomOut() {

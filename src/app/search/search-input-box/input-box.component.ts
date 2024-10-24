@@ -40,6 +40,7 @@ import { SearchInputBoxService } from './searchInputBox.service';
   styleUrls: ['./input-box.component.css'],
 })
 export class InputBoxComponent implements OnInit {
+  rabbitCardImagePath: string = '../../../assets/img/rabbitCard.png';
   form: FormGroup;
   stations: StationModel[] = [];
   types: TypeModel[] = [];
@@ -54,7 +55,7 @@ export class InputBoxComponent implements OnInit {
     private searchInputBoxService: SearchInputBoxService
   ) {
     this.form = this.fb.group({
-      source: ['', [Validators.required, Validators.maxLength(5)]],
+      origin: ['', [Validators.required, Validators.maxLength(5)]],
       destination: ['', [Validators.required, Validators.maxLength(5)]],
       type: [1, Validators.required],
     });
@@ -97,18 +98,23 @@ export class InputBoxComponent implements OnInit {
     }
   }
 
-  onSelectSource(event: any): void {
-    this.form.get('source')?.setValue(event.item.stationName);
+  onSelectOrigin(event: any): void {
+    this.form.get('origin')?.setValue(event.item.stationName);
   }
 
   onSelectDestination(event: any): void {
     this.form.get('destination')?.setValue(event.item.stationName);
   }
 
+  getSelectedTypeDescription(): string {
+    const selectedType = this.types.find(type => type.id === this.form.value.type);
+    return selectedType ? selectedType.description : '';
+  }
+
   async callCalculate(responseModalTemplate: any): Promise<void> {
     this.messageResponse.clearMessage();
     const fareCalculatorRequest = new FareCalculatorRequest(
-      this.form.value.source,
+      this.form.value.origin,
       this.form.value.destination,
       this.form.value.type
     );

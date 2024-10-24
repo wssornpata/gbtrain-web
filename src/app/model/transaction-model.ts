@@ -1,6 +1,6 @@
 export interface TransactionModel {
     id: number;
-    source: string;
+    origin: string;
     destination: string;
     price: number;
     type: number;

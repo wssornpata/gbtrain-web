@@ -7,31 +7,31 @@
 		</ng-template>
 		<div>
 			<div class="mb-5">
-				<label for="source">Source:</label>
-				<input
-					id="source"
+				<label class="topic" for="origin">Origin:</label>
+				<input 
+					id="origin"
 					type="text"
-					formControlName="source"
+					formControlName="origin"
 					[typeahead]="stations"
 					[typeaheadOptionField]="'stationFullname'"
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
-					(typeaheadOnSelect)="onSelectSource($event)"
+					(typeaheadOnSelect)="onSelectOrigin($event)"
 					class="form-control"
-					placeholder="Enter source" />
+					placeholder="Enter Origin" />
 				<div
-					*ngIf="form.get('source')?.invalid && (form.get('source')?.dirty || form.get('source')?.touched)"
+					*ngIf="form.get('origin')?.invalid && (form.get('origin')?.dirty || form.get('origin')?.touched)"
 					class="text-danger">
-					<div *ngIf="form.get('source')?.errors?.['required']">Source is
+					<div *ngIf="form.get('origin')?.errors?.['required']">Origin is
 						required.</div>
-					<div *ngIf="form.get('source')?.errors?.['maxLength']">Source cannot be
+					<div *ngIf="form.get('origin')?.errors?.['maxLength']">Origin cannot be
 						more than 5 characters long.</div>
 				</div>
 			</div>
 			<div class="mb-5">
-				<label for="destination">Destination:</label>
+				<label class="topic" for="destination">Destination:</label>
 				<input
 					id="destination"
 					type="text"
@@ -63,7 +63,7 @@
 				<div class="position-relative" dropdown>
 					<button id="button-basic" dropdownToggle type="button"
 						class="btn btn-success dropdown-toggle" aria-controls="dropdown-basic">
-						{{ form.value.type }} <span class="caret"></span>
+						{{ getSelectedTypeDescription() }} <span class="caret"></span>
 					</button>
 					<ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
 						aria-labelledby="button-basic">
@@ -77,7 +77,7 @@
 				</div>
 				<div>
 					<button class="btn btn-primary submit-button" type="submit"
-						[disabled]="form.invalid">Submit</button>
+						[disabled]="form.invalid">Search</button>
 				</div>
 			</div>
 		</div>
@@ -90,16 +90,21 @@
 
 <ng-template #responseModalTemplate>
 	<div class="modal-header">
-		<h4 class="modal-title pull-left">Response Data</h4>
-		<button type="button" class="close pull-right" aria-label="Close"
-			(click)="closeModal()">
+		<h4 class="modal-title pull-left">Net Price</h4>
+		<button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
 			<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
-	<div class="modal-body">
-		<p><strong>Source:</strong> {{ responseData.source }}</p>
-		<p><strong>Destination:</strong> {{ responseData.destination }}</p>
-		<p><strong>Price:</strong> {{ responseData.price }} บาท</p>
-		<p><strong>Type:</strong> {{ responseData.type }}</p>
+	<div class="modal-body flex">
+		<div class="flex-grow">
+			<p><strong>Origin:</strong> {{ responseData.origin }}</p>
+			<p><strong>Destination:</strong> {{ responseData.destination }}</p>
+			<p><strong>Price:</strong> {{ responseData.price }} บาท</p>
+			<p><strong>Type:</strong> {{ responseData.type }}</p>
+			<img
+				[src]="rabbitCardImagePath"
+				alt="Image description"
+				class="flex-grow-1 w-32 h-32 object-cover rounded-lg rabbitcard" />
+		</div>
 	</div>
 </ng-template>

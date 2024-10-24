@@ -1,34 +1,34 @@
 export interface FareCalculatorResponseInterface {
-  source: string;
+  origin: string;
   destination: string;
-  type: number;
+  type: string;
   price: number;
 }
 
 export class FareCalculatorResponse implements FareCalculatorResponseInterface {
-  source: string;
+  origin: string;
   destination: string;
-  type: number;
+  type: string;
   price: number;
 
   constructor(
-    source: string = '',
+    origin: string = '',
     destination: string = '',
-    type: number = 0,
+    type: string = '',
     price: number = 0
   ) {
-    this.source = source;
+    this.origin = origin;
     this.destination = destination;
     this.type = type;
     this.price = price;
   }
 
-  getSource(): string {
-    return this.source;
+  getOrigin(): string {
+    return this.origin;
   }
 
-  setSource(value: string): void {
-    this.source = value;
+  setOrigin(value: string): void {
+    this.origin = value;
   }
 
   getDestination(): string {
@@ -39,11 +39,11 @@ export class FareCalculatorResponse implements FareCalculatorResponseInterface {
     this.destination = value;
   }
 
-  getType(): number {
+  getType(): string {
     return this.type;
   }
 
-  setType(value: number): void {
+  setType(value: string): void {
     this.type = value;
   }
 
