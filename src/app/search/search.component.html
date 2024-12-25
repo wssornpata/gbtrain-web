@@ -1,12 +1,16 @@
-<div class="container-fluid">
-    <div class="d-flex flex-row body-content">
+<body>
+    <div class="d-flex align-items-center justify-content-center body-content">
         <div
-            class="col-md-3 left-column d-flex justify-content-center align-items-center">
-            <app-input-box></app-input-box>
-        </div>
-        <div
-            class="col-md-9 right-column d-flex justify-content-center align-items-center overflow-hidden">
-            <app-search-route-img></app-search-route-img>
+            class="container rounded d-flex flex-row align-items-center justify-content-around bg-white h-75">
+            <div
+                class="left-column d-flex justify-content-center align-items-center flex-column">
+                <h1 class="mb-md-5">Search Panel</h1>
+                <app-input-box></app-input-box>
+            </div>
+            <div
+                class="right-column d-flex justify-content-center align-items-center overflow-hidden">
+                <app-search-route-img></app-search-route-img>
+            </div>
         </div>
     </div>
-</div>
+</body>

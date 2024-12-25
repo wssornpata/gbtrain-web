@@ -8,26 +8,29 @@
 		<div>
 			<div class="mb-5">
 				<label class="topic" for="origin">Origin:</label>
-				<input 
+				<input
 					id="origin"
 					type="text"
 					formControlName="origin"
+					(click)="this.messageResponse.clearMessage()"
+					(change)="this.onSelectOrigin($event)"
+					(blur)="this.logForm()"
 					[typeahead]="stations"
 					[typeaheadOptionField]="'stationFullname'"
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
-					(typeaheadOnSelect)="onSelectOrigin($event)"
+					(typeaheadOnSelect)="this.onSelectOrigin($event)"
 					class="form-control"
-					placeholder="Enter Origin" />
-				<div
-					*ngIf="form.get('origin')?.invalid && (form.get('origin')?.dirty || form.get('origin')?.touched)"
-					class="text-danger">
-					<div *ngIf="form.get('origin')?.errors?.['required']">Origin is
-						required.</div>
-					<div *ngIf="form.get('origin')?.errors?.['maxLength']">Origin cannot be
-						more than 5 characters long.</div>
+					placeholder="Enter Origin"
+					formControlName="origin"
+					[class.is-invalid]="form.controls['origin'].invalid && (form.controls['origin'].touched || form.controls['origin'].dirty)">
+				<div class="invalid-feedback">
+					<div *ngIf="form.controls['origin'].touched"
+						class="text-danger">{{form.controls['origin'].errors?.['required'].value}}</div>
+					<div *ngIf="form.controls['origin'].errors?.['maxLength']"
+						class="text-danger">{{form.controls['origin'].errors?.['maxLength'].value}}</div>
 				</div>
 			</div>
 			<div class="mb-5">
@@ -36,22 +39,24 @@
 					id="destination"
 					type="text"
 					formControlName="destination"
+					(click)="this.messageResponse.clearMessage()"
+					(change)="this.onSelectDestination($event)"
 					[typeahead]="stations"
 					[typeaheadOptionField]="'stationFullname'"
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
-					(typeaheadOnSelect)="onSelectDestination($event)"
+					(typeaheadOnSelect)="this.onSelectDestination($event)"
 					class="form-control"
-					placeholder="Enter Destination" />
-				<div
-					*ngIf="form.get('destination')?.invalid && (form.get('destination')?.dirty || form.get('destination')?.touched)"
-					class="text-danger">
-					<div *ngIf="form.get('destination')?.errors?.['required']">Destination is
-						required.</div>
-					<div *ngIf="form.get('destination')?.errors?.['maxLength']">Destination
-						cannot be more than 5 characters long.</div>
+					placeholder="Enter Destination"
+					formControlName="destination"
+					[class.is-invalid]="form.controls['destination'].invalid && (form.controls['destination'].touched || form.controls['destination'].dirty)">
+				<div class="invalid-feedback">
+					<div *ngIf="form.controls['destination'].touched"
+						class="text-danger">{{form.controls['destination'].errors?.['required'].value}}</div>
+					<div *ngIf="form.controls['destination'].errors?.['maxLength']"
+						class="text-danger">{{form.controls['destination'].errors?.['maxLength'].value}}</div>
 				</div>
 			</div>
 			<div class="alert-text">
@@ -68,7 +73,7 @@
 					<ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
 						aria-labelledby="button-basic">
 						<li role="menuitem" *ngFor="let type of types">
-							<a class="dropdown-item" (click)="selectedType(type.id)">{{type.id}}.
+							<a class="dropdown-item" (click)="selectedType(type.id)">
 								{{type.description}}</a>
 						</li>
 					</ul>
@@ -89,22 +94,118 @@
 </ng-template>
 
 <ng-template #responseModalTemplate>
-	<div class="modal-header">
-		<h4 class="modal-title pull-left">Net Price</h4>
-		<button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-	<div class="modal-body flex">
-		<div class="flex-grow">
-			<p><strong>Origin:</strong> {{ responseData.origin }}</p>
-			<p><strong>Destination:</strong> {{ responseData.destination }}</p>
-			<p><strong>Price:</strong> {{ responseData.price }} บาท</p>
-			<p><strong>Type:</strong> {{ responseData.type }}</p>
-			<img
-				[src]="rabbitCardImagePath"
-				alt="Image description"
-				class="flex-grow-1 w-32 h-32 object-cover rounded-lg rabbitcard" />
+	<div *ngIf="responseData;">
+		<div class="modal-header">
+			<h4 class="modal-title pull-left">Travel Information</h4>
+			<button type="button" class="close pull-right" aria-label="Close"
+				(click)="closeModal()">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body flex">
+			<div class="d-flex justify-content-start align-items-start flex-column">
+				<div class="d-flex w-100 flex-column">
+					<div class="d-flex w-100 flex-row justify-content-between">
+						<div class="d-flex flex-row w-50">
+							<div
+								class="d-flex flex-row justify-content-center align-items-center station-icon border border-success rounded-circle">
+								{{responseData.origin}}
+							</div>
+							<div
+								class="ml-4 d-flex flex-column justify-content-end align-content-center w-100 h-100">
+								<p><strong>Origin</strong></p>
+								<p>{{responseData.origin}} | {{responseData.originFullname}}</p>
+							</div>
+						</div>
+						<div class="d-flex flex-row w-50">
+							<div
+								class="d-flex flex-row justify-content-center align-items-center station-icon border border-success rounded-circle">
+								{{responseData.destination}}
+							</div>
+							<div
+								class="ml-4 d-flex flex-column justify-content-end align-content-center w-100 h-100">
+								<p><strong>Destination</strong></p>
+								<p>{{responseData.destination}} |
+									{{responseData.destinationFullname}}</p>
+							</div>
+						</div>
+					</div>
+					<div class="mt-2 d-flex w-100 flex-row">
+						<div class="d-flex flex-row">
+							<p><strong>Calculate Type:</strong></p>
+							<p class="ml-2">{{responseData.type}}</p>
+						</div>
+					</div>
+				</div>
+				<div class="container border rounded bg-light">
+					<!-- <h3 class="m-3 w-auto text-center">Price Calculation</h3> -->
+					<div class="calculation-header">
+						<div class="type-header">
+							<p class><strong>Card Type</strong></p>
+						</div>
+						<div class="price-header">
+							<p class><strong>Net Price</strong></p>
+						</div>
+					</div>
+					<hr>
+					<div class="rabbitcard-container">
+						<img
+							[src]="singleJourneyImagePath"
+							class="rounded-lg rabbitcard" />
+						<div class="rabbitcard-detail">
+							<p><strong>Single Journey Card</strong> </p>
+							<p>บัตรโดยสารเที่ยวเดียว</p>
+						</div>
+						<div class="price-detail">
+							<p>{{responseData.price}} Baht</p>
+						</div>
+					</div>
+					<div class="rabbitcard-container">
+						<img
+							[src]="rabbitCardImagePath"
+							class="rounded-lg rabbitcard" />
+						<div class="rabbitcard-detail">
+							<p><strong>Stored-Value Pass For Adult</strong> </p>
+							<p>บัตรสำหรับผู้ใหญ่</p>
+						</div>
+						<div class="price-detail">
+							<p>{{responseData.price}} Baht</p>
+						</div>
+					</div>
+					<div class="rabbitcard-container">
+						<img
+							[src]="rabbitCardStudentImagePath"
+							class="rounded-lg rabbitcard" />
+						<div class="rabbitcard-detail">
+							<p><strong>Stored-Value Pass For Student</strong> </p>
+							<p>บัตรสำหรับนักเรียน - นักศึกษา</p>
+						</div>
+						<div class="price-detail">
+							<p>{{responseData.price - 3 }} Baht</p>
+						</div>
+					</div>
+					<div class="rabbitcard-container">
+						<img
+							[src]="rabbitCardSeniorImagePath"
+							class="rounded-lg rabbitcard" />
+						<div class="rabbitcard-detail">
+							<p><strong>Stored-Value Pass For Senior</strong> </p>
+							<p>บัตรสำหรับผู้สูงอายุ</p>
+						</div>
+						<div class="price-detail">
+							<p>{{this.roundedUp(responseData.price / 2)}} Baht</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </ng-template>
+
+<!-- <ng-template #responseModal>
+    <div *ngIf="messageResponse" class="modal-body text-center">
+        <p>{{ messageResponse.message }}</p>
+        <button type="button" class="btn btn-primary"
+            (click)="closeModal()">Close</button>
+    </div>
+</ng-template> -->

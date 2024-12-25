@@ -11,16 +11,16 @@
                     <th scope="col" class="col-md-2">#</th>
                     <th scope="col" class="col-2">Distance(Gap)</th>
                     <th scope="col" class="col-2">Description</th>
-                    <th scope="col" class="col-2">Price</th>
+                    <th scope="col" class="col-3">Price</th>
                     <th scope="col" class="col-4">Last updated</th>
                 </tr>
             </thead>
-            <tbody formArrayName="fareRates">
+            <tbody formArrayName="fareRatesFormArray">
                 <tr
-                    *ngFor="let fareRate of fareRatesFormArray.controls; let i = index"
+                    *ngFor="let fareRate of getFareRatesFormArray().controls; let i = index"
                     [formGroupName]="i">
                     <th scope="row">{{ i + 1 }}</th>
-                    <td>{{ fareRate.get('distance')?.value }}</td>
+                    <td>{{fareRate.controls['distance'].value}}</td>
                     <td>
                         <input type="text" formControlName="description" placeholder="Enter description">
                         <div *ngIf="fareRate.get('description')?.invalid && (fareRate.get('description')?.dirty || fareRate.get('description')?.touched)">
@@ -29,13 +29,13 @@
                         </div>
                     </td>
                     <td>
-                        <input type="text" formControlName="price" placeholder="Enter price">
+                        <input type="number" formControlName="price" placeholder="Enter price">
                         <div *ngIf="fareRate.get('price')?.invalid && (fareRate.get('price')?.dirty || fareRate.get('price')?.touched)">
                             <small class="text-danger" *ngIf="fareRate.get('price')?.errors?.['required']">Price is required.</small>
                             <small class="text-danger" *ngIf="fareRate.get('price')?.errors?.['min']">Price must be greater than 0.</small>
                         </div>
                     </td>
-                    <td>{{ dateService.formatDate(fareRate.get('updateDatetime')?.value) }}</td>
+                    <td>{{ dateService.formatDate(fareRate.controls['updateDatetime']?.value) }}</td>
                 </tr>
                 <tr>
                     <td colspan="12">

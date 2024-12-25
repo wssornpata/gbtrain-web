@@ -1,12 +1,12 @@
 <div class="d-flex flex-column position-absolute zoom-button">
-	<img src="../../../assets/img/zoomplus.png" class="magnifier btn bg-lightblue" (click)="zoomIn()">
-	<img src="../../../assets/img/zoomminus.png" class="magnifier btn bg-lightgrey mt-2" (click)="zoomOut()">
+	<img src="../../../assets/img/zoomplus.png" class="magnifier btn bg-lightblue"
+		(click)="zoomIn()">
+	<img src="../../../assets/img/zoomminus.png"
+		class="magnifier btn bg-lightgrey mt-2" (click)="zoomOut()">
 </div>
 <div
-	class="mt-lg-5 col-md-8 bg-lightcoral d-flex align-items-center justify-content-center ">
-	<div>
-		<img src="../../assets/img/RouteMap.jpg" alt="Route Map"
-			class="img-fluid zoomable-img align-items-center"
-			[style.transform]="'scale(' + scale + ')'">
-	</div>
+	class=" col-md-9 bg-lightcoral d-flex align-items-center justify-content-center ">
+	<img src="../../assets/img/RouteMap.jpg" alt="Route Map"
+		class="img-fluid zoomable-img align-items-center"
+		[style.transform]="'scale(' + scale + ')'">
 </div>

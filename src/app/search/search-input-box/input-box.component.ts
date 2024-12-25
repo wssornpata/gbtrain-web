@@ -1,15 +1,6 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import {
-  HttpClientModule,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { HttpClientModule, HttpResponse } from '@angular/common/http';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -21,7 +12,9 @@ import { TypeModel } from '../../model/type-model';
 import { MessageResponse } from '../../dto/error/response/error-message-response';
 import { FareCalculatorResponse } from './dto/response/fare-calculator-response.model';
 import { ErrorHandlingService } from '../../services/errorhandling.service';
-import { SearchInputBoxService } from './searchInputBox.service';
+import { SearchFormService } from '../services/search-form.service';
+import { Subject } from 'rxjs';
+import { SearchInputBoxService } from '../services/searchInputBox.service';
 
 @Component({
   selector: 'app-input-box',
@@ -39,35 +32,53 @@ import { SearchInputBoxService } from './searchInputBox.service';
   templateUrl: './input-box.component.html',
   styleUrls: ['./input-box.component.css'],
 })
-export class InputBoxComponent implements OnInit {
-  rabbitCardImagePath: string = '../../../assets/img/rabbitCard.png';
-  form: FormGroup;
+export class InputBoxComponent implements OnInit, OnDestroy {
+  rabbitCardImagePath: string = '../../../assets/img/RabbitCard.png';
+  rabbitCardStudentImagePath: string =
+    '../../../assets/img/RabbitCard-student.png';
+  rabbitCardSeniorImagePath: string =
+    '../../../assets/img/RabbitCard-senior.png';
+  singleJourneyImagePath: string = '../../../assets/img/SingleJourney.png';
+
+  onDestroy: Subject<void> = new Subject<void>();
+
+  origin = '';
+  destination = '';
+  colorMap = new Map<string, string>();
+  form!: FormGroup;
   stations: StationModel[] = [];
   types: TypeModel[] = [];
   responseData: FareCalculatorResponse = new FareCalculatorResponse();
   messageResponse: MessageResponse = new MessageResponse();
   modalRef?: BsModalRef;
 
+  logForm() {
+    console.log(this.form);
+  }
+
   constructor(
-    private fb: FormBuilder,
     private modalService: BsModalService,
     private errorHandlingService: ErrorHandlingService,
-    private searchInputBoxService: SearchInputBoxService
+    private searchInputBoxService: SearchInputBoxService,
+    private searchFormService: SearchFormService
   ) {
-    this.form = this.fb.group({
-      origin: ['', [Validators.required, Validators.maxLength(5)]],
-      destination: ['', [Validators.required, Validators.maxLength(5)]],
-      type: [1, Validators.required],
-    });
+    // this.form = this.fb.group({
+    //   origin: ['', [Validators.required, Validators.maxLength(5)]],
+    //   destination: ['', [Validators.required, Validators.maxLength(5)]],
+    //   type: [1, Validators.required],
+    // });
   }
 
   ngOnInit(): void {
     this.loadStations();
     this.loadType();
+    this.form = this.searchFormService.initSearchForm(this.onDestroy);
+    this.form.controls['type'].setValue(1);
   }
 
-  selectedType(type: number): void {
-    this.form.patchValue({ type });
+  selectedType(typeId: number): void {
+    // console.log(event);
+    this.form.controls['type'].setValue(typeId);
   }
 
   openModal(template: TemplateRef<void>): void {
@@ -99,24 +110,49 @@ export class InputBoxComponent implements OnInit {
   }
 
   onSelectOrigin(event: any): void {
-    this.form.get('origin')?.setValue(event.item.stationName);
+    try {
+      this.origin =
+        this.stations.find(
+          (station) =>
+            station.stationFullname === this.form.controls['origin'].value
+        )?.stationName || '';
+    } catch (error) {
+      this.origin = '';
+    }
   }
 
   onSelectDestination(event: any): void {
-    this.form.get('destination')?.setValue(event.item.stationName);
+    try {
+      this.destination =
+        this.stations.find(
+          (station) =>
+            station.stationFullname === this.form.controls['destination'].value
+        )?.stationName || '';
+    } catch (error) {
+      this.destination = '';
+    }
   }
 
   getSelectedTypeDescription(): string {
-    const selectedType = this.types.find(type => type.id === this.form.value.type);
+    const selectedType = this.types.find(
+      (type) => type.id === this.form.controls['type'].value
+    );
     return selectedType ? selectedType.description : '';
+  }
+
+  roundedUp(deci: number): any {
+    return Math.round(deci);
   }
 
   async callCalculate(responseModalTemplate: any): Promise<void> {
     this.messageResponse.clearMessage();
+
+    console.log(this.form);
+
     const fareCalculatorRequest = new FareCalculatorRequest(
-      this.form.value.origin,
-      this.form.value.destination,
-      this.form.value.type
+      this.origin,
+      this.destination,
+      this.form.controls['type'].value
     );
 
     try {
@@ -125,7 +161,12 @@ export class InputBoxComponent implements OnInit {
       this.responseData = response.body;
       this.openModal(responseModalTemplate);
     } catch (error) {
-      this.errorHandlingService.handleError(error);
+      this.messageResponse = this.errorHandlingService.handleError(error);
+      console.log(this.messageResponse);
     }
+  }
+
+  ngOnDestroy() {
+    this.onDestroy.next();
   }
 }

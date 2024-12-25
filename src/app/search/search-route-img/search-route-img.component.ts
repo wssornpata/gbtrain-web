@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
 
 export class SearchRouteImgComponent {
   imageSrc = '../../assets/img/RouteMap.jpg';
-  scale = 1.4;
+  scale = 0.9;
 
   zoomIn() {
     this.scale = Math.min(2.3, this.scale + 0.1);

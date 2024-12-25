@@ -1,24 +1,16 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormArray,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { PriceAdjustorRequest } from '../request/price-adjustor-request';
-import { FareRateModel } from '../../model/farerate-model';
-import {
-  HttpClientModule,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
+import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { MessageResponse } from '../../dto/error/response/error-message-response';
 import { DateService } from '../../services/date.service';
-import { AdminTransactionService } from './admin-price-adjustor.service';
+import { AdminTransactionService } from '../services/admin-price-adjustor.service';
 import { ErrorHandlingService } from '../../services/errorhandling.service';
+import { AdminAdjustorFormService } from '../services/admin-adjustor-form.service';
+import { FareRateModel } from '../../model/farerate-model';
+import { PriceAdjustorRequest } from '../request/price-adjustor-request';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-admin-price-adjustor-panel',
@@ -28,29 +20,38 @@ import { ErrorHandlingService } from '../../services/errorhandling.service';
   templateUrl: './admin-price-adjustor-panel.component.html',
   styleUrls: ['./admin-price-adjustor-panel.component.css'],
 })
-export class AdminPriceAdjustorPanelComponent implements OnInit {
+export class AdminPriceAdjustorPanelComponent implements OnInit, OnDestroy {
+  logger(formControl: any) {
+    console.log(formControl);
+  }
+
   modalRef?: BsModalRef;
   messageResponse: MessageResponse = new MessageResponse();
-  priceAdjustorForm: FormGroup;
+  priceAdjustorForm: FormGroup<{ fareRatesFormArray: FormArray<FormGroup<any>> }>;
+  destroy: Subject<void> = new Subject<void>();
 
   constructor(
     private modalService: BsModalService,
     private adminTransactionService: AdminTransactionService,
+    private adminAdjustorFormService: AdminAdjustorFormService,
     private errorHandlingService: ErrorHandlingService,
-    public dateService: DateService,
-    private fb: FormBuilder
+    public dateService: DateService
   ) {
-    this.priceAdjustorForm = this.fb.group({
-      fareRates: this.fb.array([]),
-    });
+    this.priceAdjustorForm = this.createForm();
   }
 
   ngOnInit(): void {
     this.loadFareRate();
   }
 
-  get fareRatesFormArray(): FormArray {
-    return this.priceAdjustorForm.get('fareRates') as FormArray;
+  getFareRatesFormArray(): FormArray<FormGroup<any>> {
+    return this.priceAdjustorForm.controls.fareRatesFormArray;
+  }
+
+  createForm(): FormGroup<{ fareRatesFormArray: FormArray<FormGroup<any>> }> {
+    return new FormGroup<{ fareRatesFormArray: FormArray<FormGroup<any>> }>({
+      fareRatesFormArray: new FormArray<FormGroup<any>>([]),
+    });
   }
 
   openModal(template: TemplateRef<void>) {
@@ -77,8 +78,6 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
       const response: HttpResponse<any> =
         await this.adminTransactionService.getRate();
       const fareRates = response.body;
-      console.log(fareRates);
-
       this.initializeForm(fareRates);
     } catch (error) {
       this.errorHandlingService.handleError(error);
@@ -86,21 +85,17 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   }
 
   initializeForm(fareRates: FareRateModel[]): void {
-    const fareRatesFormArray = this.fb.array(
-      fareRates.map((fareRate) =>
-        this.fb.group({
-          id: [fareRate.id],
-          distance: [fareRate.distance],
-          price: [fareRate.price, [Validators.required, Validators.min(0)]],
-          description: [
-            fareRate.description,
-            [Validators.required, Validators.max(255)],
-          ],
-          updateDatetime: [fareRate.updateDatetime],
-        })
-      )
-    );
-    this.priceAdjustorForm.setControl('fareRates', fareRatesFormArray);
+    const fareRatesFormArray = this.getFareRatesFormArray();
+    fareRatesFormArray.clear();
+
+    fareRates.forEach((fareRate) => {
+      const fareRateForm = this.adminAdjustorFormService.initAdminAdjustorForm(
+        this.destroy
+      ) as FormGroup<any>;
+      
+      fareRateForm.patchValue(fareRate);
+      fareRatesFormArray.push(fareRateForm);
+    });
   }
 
   async adjustPrices(
@@ -118,7 +113,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
   }
 
   private wrapperFareRateRequestList(): PriceAdjustorRequest[] {
-    return this.fareRatesFormArray.controls.map((control) => {
+    return this.getFareRatesFormArray().controls.map((control) => {
       const fareRate = control.value;
       return new PriceAdjustorRequest(
         fareRate.id,
@@ -127,5 +122,9 @@ export class AdminPriceAdjustorPanelComponent implements OnInit {
         fareRate.description
       );
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
   }
 }
