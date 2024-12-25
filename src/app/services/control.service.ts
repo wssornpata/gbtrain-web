@@ -96,13 +96,19 @@ export class ControlService {
     fc.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(destroyObserable))
       .subscribe((value: string | number | null) => {
-        if (typeof value === 'string' && value !== null) {
+        if (value !== null) {
           const convertedValue = converter.fromString(value);
           if (convertedValue !== INVALID_VALUE) {
             this.getSubject(jsonKey).next(convertedValue);
           }
         }
       });
+	// .subscribe((value: string) => {
+	// 	const convertedValue = converter.fromString(value);
+	// 	if ((convertedValue as any) != INVALID_VALUE) {
+	// 		this.getSubject(jsonKey).next(convertedValue)
+	// 	}
+	// })
     this.getSubject(jsonKey)
       .pipe(distinctUntilChanged(), takeUntil(destroyObserable))
       .subscribe((data) => {

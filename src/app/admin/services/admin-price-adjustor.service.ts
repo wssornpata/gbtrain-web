@@ -7,7 +7,7 @@ import { PriceAdjustorRequest } from '../request/price-adjustor-request';
 @Injectable({
   providedIn: 'root',
 })
-export class AdminTransactionService {
+export class AdminPriceAdjustorService {
   constructor(private http: HttpClient) {}
 
   getRate(): Promise<HttpResponse<any>> {

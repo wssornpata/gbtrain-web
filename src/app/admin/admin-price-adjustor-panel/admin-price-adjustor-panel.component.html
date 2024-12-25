@@ -4,7 +4,7 @@
         <h1>Price-Adjustor Panel</h1>
     </div>
 
-    <form [formGroup]="priceAdjustorForm">
+    <form [formGroup]="form">
         <table class="table table-bordered admin-table text-center">
             <thead>
                 <tr>
@@ -19,23 +19,50 @@
                 <tr
                     *ngFor="let fareRate of getFareRatesFormArray().controls; let i = index"
                     [formGroupName]="i">
-                    <th scope="row">{{ i + 1 }}</th>
+                    <th scope="row">{{ i+1 }}</th>
                     <td>{{fareRate.controls['distance'].value}}</td>
                     <td>
-                        <input type="text" formControlName="description" placeholder="Enter description">
-                        <div *ngIf="fareRate.get('description')?.invalid && (fareRate.get('description')?.dirty || fareRate.get('description')?.touched)">
-                            <small class="text-danger" *ngIf="fareRate.get('description')?.errors?.['required']">Description is required.</small>
-                            <small class="text-danger" *ngIf="fareRate.get('description')?.errors?.['max']">Description must be smaller than 255.</small>
+                        <!-- <input type="text" formControlName="description"
+                            placeholder="Enter description" (blur)="logform()"
+                            [class.is-invalid]="fareRate.controls['description'].invalid && (fareRate.controls['description'].touched || fareRate.controls['description'].dirty)">
+                       <div
+                            *ngIf="fareRate.get('description')?.invalid && (fareRate.get('description')?.dirty || fareRate.get('description')?.touched)">
+                            <small class="text-danger"
+                                *ngIf="fareRate.get('description')?.errors?.['required']">Description
+                                is required.</small>
+                            <small class="text-danger"
+                                *ngIf="fareRate.get('description')?.errors?.['max']">Description
+                                must be smaller than 255.</small>
+                        </div> -->
+                        <input type="text" formControlName="description"
+                            placeholder="Enter description" (blur)="logform()"
+                            [class.is-invalid]="fareRate.controls['description'].invalid && (fareRate.controls['description'].touched || fareRate.controls['description'].dirty)">
+                        <div class="invalid-feedback">
+                            <div
+                                *ngIf="fareRate.controls['description'].touched && fareRate.controls['description'].errors?.['required']"
+                                >{{fareRate.controls['description'].errors?.['required'].value}}</div>
+                            <div
+                                *ngIf="fareRate.controls['description'].errors?.['maxLength']"
+                                class="text-danger">{{fareRate.controls['description'].errors?.['maxLength'].value}}</div>
                         </div>
                     </td>
                     <td>
-                        <input type="number" formControlName="price" placeholder="Enter price">
-                        <div *ngIf="fareRate.get('price')?.invalid && (fareRate.get('price')?.dirty || fareRate.get('price')?.touched)">
-                            <small class="text-danger" *ngIf="fareRate.get('price')?.errors?.['required']">Price is required.</small>
-                            <small class="text-danger" *ngIf="fareRate.get('price')?.errors?.['min']">Price must be greater than 0.</small>
+                        <input type="number" formControlName="price"
+                            placeholder="Enter price" (blur)="logform()"
+                            [class.is-invalid]="fareRate.controls['price'].invalid && (fareRate.controls['price'].touched || fareRate.controls['price'].dirty)">
+                        <div class="invalid-feedback">
+                            <div
+                                *ngIf="fareRate.controls['price'].touched && fareRate.controls['price'].errors?.['required']"
+                                class="text-danger">{{fareRate.controls['price'].errors?.['required'].value}}</div>
+                            <div
+                                *ngIf="fareRate.controls['price'].errors?.['minNumber']"
+                                class="text-danger">{{fareRate.controls['price'].errors?.['minNumber'].value}}</div>
                         </div>
+
                     </td>
-                    <td>{{ dateService.formatDate(fareRate.controls['updateDatetime']?.value) }}</td>
+                    <td>{{
+                        dateService.formatDate(fareRate.controls['updateDatetime']?.value)
+                        }}</td>
                 </tr>
                 <tr>
                     <td colspan="12">
