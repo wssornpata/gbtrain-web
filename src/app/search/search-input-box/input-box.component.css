@@ -136,7 +136,3 @@ form {
   font-size: large;
   font-weight: 600;
 }
-
-.is-invalid {
-  border: 1px solid red;
-}

@@ -7,6 +7,7 @@ import {
   AbstractControlOptions,
   FormControl,
   FormBuilder,
+  Validators,
 } from '@angular/forms';
 import {
   BehaviorSubject,
@@ -103,12 +104,12 @@ export class ControlService {
           }
         }
       });
-	// .subscribe((value: string) => {
-	// 	const convertedValue = converter.fromString(value);
-	// 	if ((convertedValue as any) != INVALID_VALUE) {
-	// 		this.getSubject(jsonKey).next(convertedValue)
-	// 	}
-	// })
+    // .subscribe((value: string) => {
+    // 	const convertedValue = converter.fromString(value);
+    // 	if ((convertedValue as any) != INVALID_VALUE) {
+    // 		this.getSubject(jsonKey).next(convertedValue)
+    // 	}
+    // })
     this.getSubject(jsonKey)
       .pipe(distinctUntilChanged(), takeUntil(destroyObserable))
       .subscribe((data) => {
@@ -119,6 +120,10 @@ export class ControlService {
       converter: converter,
     };
     return fc;
+  }
+
+  geyMyFormControl(ant: any): FormControl {
+    return this.fb.control('', [Validators.required, Validators.minLength(3)]);
   }
 }
 
@@ -185,7 +190,9 @@ export let validators = {
       let val: number = control.value;
       if (val <= size) {
         return {
-          minNumber: validators.errorCode(errorCode.replace('%s', size.toString())),
+          minNumber: validators.errorCode(
+            errorCode.replace('%s', size.toString())
+          ),
         };
       }
       return null;

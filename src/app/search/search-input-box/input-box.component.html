@@ -13,24 +13,24 @@
 					type="text"
 					formControlName="origin"
 					(click)="this.messageResponse.clearMessage()"
-					(change)="this.onSelectOrigin($event)"
-					(blur)="this.logForm()"
 					[typeahead]="stations"
 					[typeaheadOptionField]="'stationFullname'"
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
-					(typeaheadOnSelect)="this.onSelectOrigin($event)"
+					(typeaheadOnSelect)="this.onSelectOrigin()"
 					class="form-control"
 					placeholder="Enter Origin"
 					formControlName="origin"
 					[class.is-invalid]="form.controls['origin'].invalid && (form.controls['origin'].touched || form.controls['origin'].dirty)">
 				<div class="invalid-feedback">
-					<div *ngIf="form.controls['origin'].touched"
-						class="text-danger">{{form.controls['origin'].errors?.['required'].value}}</div>
-					<div *ngIf="form.controls['origin'].errors?.['maxLength']"
-						class="text-danger">{{form.controls['origin'].errors?.['maxLength'].value}}</div>
+					<div
+						*ngIf="form.controls['origin'].touched && form.controls['origin'].errors?.['required']"
+						class="text-danger">Origin is required.</div>
+					<div *ngIf="form.controls['origin'].errors?.['maxlength']"
+						class="text-danger">Origin is invalid.
+					</div>
 				</div>
 			</div>
 			<div class="mb-5">
@@ -39,24 +39,24 @@
 					id="destination"
 					type="text"
 					formControlName="destination"
-					(click)="this.messageResponse.clearMessage()"
-					(change)="this.onSelectDestination($event)"
 					[typeahead]="stations"
 					[typeaheadOptionField]="'stationFullname'"
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
-					(typeaheadOnSelect)="this.onSelectDestination($event)"
+					(typeaheadOnSelect)="this.onSelectDestination()"
 					class="form-control"
 					placeholder="Enter Destination"
 					formControlName="destination"
 					[class.is-invalid]="form.controls['destination'].invalid && (form.controls['destination'].touched || form.controls['destination'].dirty)">
 				<div class="invalid-feedback">
-					<div *ngIf="form.controls['destination'].touched"
-						class="text-danger">{{form.controls['destination'].errors?.['required'].value}}</div>
-					<div *ngIf="form.controls['destination'].errors?.['maxLength']"
-						class="text-danger">{{form.controls['destination'].errors?.['maxLength'].value}}</div>
+					<div
+						*ngIf="form.controls['destination'].touched && form.controls['destination'].errors?.['required']"
+						class="text-danger">Destination is required.</div>
+					<div *ngIf="form.controls['destination'].errors?.['maxlength']"
+						class="text-danger">Destination is invalid.
+					</div>
 				</div>
 			</div>
 			<div class="alert-text">
@@ -73,12 +73,10 @@
 					<ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
 						aria-labelledby="button-basic">
 						<li role="menuitem" *ngFor="let type of types">
-							<a class="dropdown-item" (click)="selectedType(type.id)">
+							<a class="dropdown-item" (click)="onSelectType(type.id)">
 								{{type.description}}</a>
 						</li>
 					</ul>
-					<div *ngIf="form.get('type')?.errors?.['maxLength']">Destination
-						cannot be more than 5 characters long.</div>
 				</div>
 				<div>
 					<button class="btn btn-primary submit-button" type="submit"

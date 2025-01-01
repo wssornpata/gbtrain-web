@@ -19,7 +19,6 @@ import { MessageResponse } from '../../dto/error/response/error-message-response
 import { DateService } from '../../services/date.service';
 import { ErrorHandlingService } from '../../services/errorhandling.service';
 import { AdminPriceAdjustorService } from '../services/admin-price-adjustor.service';
-import { AdminAdjustorFormService } from '../services/admin-adjustor-form.service';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -30,41 +29,45 @@ import { Subject } from 'rxjs';
   templateUrl: './admin-price-adjustor-panel.component.html',
   styleUrls: ['./admin-price-adjustor-panel.component.css'],
 })
-
 export class AdminPriceAdjustorPanelComponent implements OnInit, OnDestroy {
   modalRef?: BsModalRef;
   messageResponse: MessageResponse = new MessageResponse();
-  form: FormGroup<{ fareRatesFormArray: FormArray<FormGroup<any>> }>;
+  myForm: FormGroup<{ fareRatesFormArray: FormArray<FormGroup<any>> }>;
   destroy: Subject<void> = new Subject<void>();
 
   constructor(
     private modalService: BsModalService,
     private adminPriceAdjustorService: AdminPriceAdjustorService,
-    private adminAdjustorFormService: AdminAdjustorFormService,
     private errorHandlingService: ErrorHandlingService,
+    private fb: FormBuilder,
     public dateService: DateService
   ) {
-    this.form = this.createForm();
+    this.myForm = this.fb.group({
+      fareRatesFormArray: new FormArray<FormGroup<any>>([]),
+    });
   }
 
-  logform(): void{
-    console.log(this.form)
+  get fareRatesFormArray(): FormArray<FormGroup<any>> {
+    return this.myForm.controls.fareRatesFormArray;
+  }
+
+  createFormGroup(farerate: FareRateModel): FormGroup {
+    return this.fb.group({
+      id: [farerate.id],
+      distance: [farerate.distance],
+      description: [farerate.description, Validators.required],
+      price: [farerate.price, Validators.required],
+      updateDatetime: [farerate.updateDatetime],
+    });
+  }
+
+  logform(): void {
+    console.log(this.myForm);
   }
 
   ngOnInit(): void {
     this.loadFareRate();
   }
-
-  createForm(): FormGroup {
-    return new FormGroup<{ fareRatesFormArray: FormArray<FormGroup<any>> }>({
-      fareRatesFormArray: new FormArray<FormGroup<any>>([]),
-    });
-  }
-
-  getFareRatesFormArray(): FormArray<FormGroup<any>> {
-    return this.form.controls.fareRatesFormArray;
-  }
-
 
   openModal(template: TemplateRef<void>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
@@ -97,24 +100,13 @@ export class AdminPriceAdjustorPanelComponent implements OnInit, OnDestroy {
   }
 
   initializeForm(fareRates: FareRateModel[]): void {
-    const fareRatesFormArray = this.getFareRatesFormArray();
+    const fareRatesFormArray = this.fareRatesFormArray;
     fareRatesFormArray.clear();
-    console.log(fareRates);
-    
+
     fareRates.forEach((fareRate) => {
-      const fareRateForm = this.adminAdjustorFormService.initAdminAdjustorForm(
-        this.destroy
-      ) as FormGroup<any>;
-      
-      // fareRateForm.patchValue(fareRate);
-      fareRateForm.controls['id'].setValue(fareRate.id)
-      fareRateForm.controls['distance'].setValue(fareRate.distance)
-      fareRateForm.controls['description'].setValue(fareRate.description)  
-      fareRateForm.controls['price'].setValue(fareRate.price)
-      fareRateForm.controls['updateDatetime'].setValue(fareRate.updateDatetime)
+      const fareRateForm = this.createFormGroup(fareRate);
       fareRatesFormArray.push(fareRateForm);
     });
-  
   }
 
   async adjustPrices(
@@ -132,7 +124,7 @@ export class AdminPriceAdjustorPanelComponent implements OnInit, OnDestroy {
   }
 
   private wrapperFareRateRequestList(): PriceAdjustorRequest[] {
-    return this.getFareRatesFormArray().controls.map((control) => {
+    return this.fareRatesFormArray.controls.map((control: FormGroup) => {
       const fareRate = control.value;
       return new PriceAdjustorRequest(
         fareRate.id,
@@ -147,4 +139,3 @@ export class AdminPriceAdjustorPanelComponent implements OnInit, OnDestroy {
     this.destroy.next();
   }
 }
-

@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  Validators,
+  FormBuilder,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -60,25 +65,21 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private errorHandlingService: ErrorHandlingService,
     private searchInputBoxService: SearchInputBoxService,
-    private searchFormService: SearchFormService
+    private searchFormService: SearchFormService,
+    private fb: FormBuilder
   ) {
-    // this.form = this.fb.group({
-    //   origin: ['', [Validators.required, Validators.maxLength(5)]],
-    //   destination: ['', [Validators.required, Validators.maxLength(5)]],
-    //   type: [1, Validators.required],
-    // });
+    this.form = this.fb.group({
+      origin: ['', [Validators.required, Validators.maxLength(255)]],
+      destination: ['', [Validators.required, Validators.maxLength(255)]],
+      type: [1, Validators.required],
+    });
   }
 
   ngOnInit(): void {
     this.loadStations();
     this.loadType();
-    this.form = this.searchFormService.initSearchForm(this.onDestroy);
-    this.form.controls['type'].setValue(1);
-  }
-
-  selectedType(typeId: number): void {
-    // console.log(event);
-    this.form.controls['type'].setValue(typeId);
+    // this.form = this.searchFormService.initSearchForm(this.onDestroy);
+    // this.form.controls['type'].setValue(1);
   }
 
   openModal(template: TemplateRef<void>): void {
@@ -109,7 +110,7 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectOrigin(event: any): void {
+  onSelectOrigin(): void {
     try {
       this.origin =
         this.stations.find(
@@ -121,7 +122,7 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectDestination(event: any): void {
+  onSelectDestination(): void {
     try {
       this.destination =
         this.stations.find(
@@ -133,11 +134,15 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     }
   }
 
+  onSelectType(typeId: number): void {
+    this.form.controls['type'].setValue(typeId);
+  }
+
   getSelectedTypeDescription(): string {
-    const selectedType = this.types.find(
-      (type) => type.id === this.form.controls['type'].value
-    );
-    return selectedType ? selectedType.description : '';
+      const selectedType = this.types.find(
+        (type) => type.id === this.form.controls['type'].value
+      );
+      return selectedType ? selectedType.description : '';
   }
 
   roundedUp(deci: number): any {
@@ -146,8 +151,6 @@ export class InputBoxComponent implements OnInit, OnDestroy {
 
   async callCalculate(responseModalTemplate: any): Promise<void> {
     this.messageResponse.clearMessage();
-
-    console.log(this.form);
 
     const fareCalculatorRequest = new FareCalculatorRequest(
       this.origin,

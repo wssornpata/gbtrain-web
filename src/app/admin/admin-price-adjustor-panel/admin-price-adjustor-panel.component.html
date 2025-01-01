@@ -4,7 +4,7 @@
         <h1>Price-Adjustor Panel</h1>
     </div>
 
-    <form [formGroup]="form">
+    <form [formGroup]="myForm">
         <table class="table table-bordered admin-table text-center">
             <thead>
                 <tr>
@@ -17,7 +17,7 @@
             </thead>
             <tbody formArrayName="fareRatesFormArray">
                 <tr
-                    *ngFor="let fareRate of getFareRatesFormArray().controls; let i = index"
+                    *ngFor="let fareRate of fareRatesFormArray.controls; let i = index"
                     [formGroupName]="i">
                     <th scope="row">{{ i+1 }}</th>
                     <td>{{fareRate.controls['distance'].value}}</td>
@@ -40,7 +40,7 @@
                         <div class="invalid-feedback">
                             <div
                                 *ngIf="fareRate.controls['description'].touched && fareRate.controls['description'].errors?.['required']"
-                                >{{fareRate.controls['description'].errors?.['required'].value}}</div>
+                                >Description is Required.</div>
                             <div
                                 *ngIf="fareRate.controls['description'].errors?.['maxLength']"
                                 class="text-danger">{{fareRate.controls['description'].errors?.['maxLength'].value}}</div>
@@ -58,10 +58,9 @@
                                 *ngIf="fareRate.controls['price'].errors?.['minNumber']"
                                 class="text-danger">{{fareRate.controls['price'].errors?.['minNumber'].value}}</div>
                         </div>
-
                     </td>
                     <td>{{
-                        dateService.formatDate(fareRate.controls['updateDatetime']?.value)
+                        dateService.formatDate(fareRate.controls['updateDatetime'].value)
                         }}</td>
                 </tr>
                 <tr>
