@@ -17,7 +17,6 @@ import { TypeModel } from '../../model/type-model';
 import { MessageResponse } from '../../dto/error/response/error-message-response';
 import { FareCalculatorResponse } from './dto/response/fare-calculator-response.model';
 import { ErrorHandlingService } from '../../services/errorhandling.service';
-import { SearchFormService } from '../services/search-form.service';
 import { Subject } from 'rxjs';
 import { SearchInputBoxService } from '../services/searchInputBox.service';
 
@@ -65,7 +64,6 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private errorHandlingService: ErrorHandlingService,
     private searchInputBoxService: SearchInputBoxService,
-    private searchFormService: SearchFormService,
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
@@ -94,10 +92,56 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     try {
       const response: HttpResponse<any> =
         await this.searchInputBoxService.getStations();
-      this.stations = response.body;
+      this.stations = this.getSortStations(response.body);
     } catch (error) {
       this.errorHandlingService.handleError(error);
     }
+  }
+
+  private getSortStations(stationList: StationModel[]): StationModel[]{
+    
+    let i = 0;
+    return  stationList.sort((a, b) => {
+      const getPriority = (stationName: string): number => {
+        if (stationName.startsWith('N')) return 1;
+        if (stationName.startsWith('CEN')) return 2;
+        if (stationName.startsWith('E')) return 3;
+        if (stationName.startsWith('W')) return 4;
+        if (stationName.startsWith('S')) return 5;
+        return 6;
+      };
+
+      const extractNumber = (stationName: string): number => {
+        const match = stationName.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 0;
+      };
+
+      const priorityA = getPriority(a.stationName);
+      const priorityB = getPriority(b.stationName);
+
+      console.log(i+"  "+a.stationName+"  "+priorityA);
+      console.log(i+"  "+b.stationName+"  "+priorityB);
+
+      i+=1
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      if (priorityA === 1 || priorityA === 4) {
+        return extractNumber(b.stationName) - extractNumber(a.stationName);
+      }
+
+      if (priorityA === 2) {
+        return 0;
+      }
+
+      if (priorityA === 3 || priorityA === 5) {
+        return extractNumber(a.stationName) - extractNumber(b.stationName);
+      }
+      return 0;
+    });
+
   }
 
   private async loadType(): Promise<void> {
@@ -139,10 +183,10 @@ export class InputBoxComponent implements OnInit, OnDestroy {
   }
 
   getSelectedTypeDescription(): string {
-      const selectedType = this.types.find(
-        (type) => type.id === this.form.controls['type'].value
-      );
-      return selectedType ? selectedType.description : '';
+    const selectedType = this.types.find(
+      (type) => type.id === this.form.controls['type'].value
+    );
+    return selectedType ? selectedType.description : '';
   }
 
   roundedUp(deci: number): any {

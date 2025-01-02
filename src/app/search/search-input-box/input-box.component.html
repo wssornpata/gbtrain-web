@@ -18,11 +18,11 @@
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
-					typeaheadGroupField="colorMappingEntity.colorFullname"
+					[isAnimated]="true"
+					[typeaheadGroupField]="'colorMappingEntity.colorFullname'"
 					(typeaheadOnSelect)="this.onSelectOrigin()"
 					class="form-control"
 					placeholder="Enter Origin"
-					formControlName="origin"
 					[class.is-invalid]="form.controls['origin'].invalid && (form.controls['origin'].touched || form.controls['origin'].dirty)">
 				<div class="invalid-feedback">
 					<div
@@ -44,6 +44,7 @@
 					[typeaheadOptionsLimit]="stations.length"
 					[typeaheadMinLength]="0"
 					[typeaheadItemTemplate]="customTemplate"
+					[isAnimated]="true"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
 					(typeaheadOnSelect)="this.onSelectDestination()"
 					class="form-control"
@@ -88,7 +89,15 @@
 </form>
 
 <ng-template #customTemplate let-model="item">
-	{{ model.stationFullname }}
+	<div class="d-lg-inline-flex w-100">
+		<div class="name-box">
+			{{ model.stationName }}
+		</div>
+		|
+		<div class="fullname-box">
+			{{ model.stationFullname }}
+		</div>
+	</div>
 </ng-template>
 
 <ng-template #responseModalTemplate>
@@ -199,11 +208,3 @@
 		</div>
 	</div>
 </ng-template>
-
-<!-- <ng-template #responseModal>
-    <div *ngIf="messageResponse" class="modal-body text-center">
-        <p>{{ messageResponse.message }}</p>
-        <button type="button" class="btn btn-primary"
-            (click)="closeModal()">Close</button>
-    </div>
-</ng-template> -->

@@ -44,10 +44,23 @@ form {
   border: 1px solid #ccc;
 }
 
+::ng-deep .dropdown-menu {
+  font-size: 16px;
+  width: 400px;
+}
+
 ::ng-deep .dropdown-header {
   font-size: 20px;
   font-weight: bold;
   color: green;
+}
+
+.name-box{
+  width: 20%;
+}
+
+.fullname-box{
+  margin-left: 10px;
 }
 
 .destination__container {
