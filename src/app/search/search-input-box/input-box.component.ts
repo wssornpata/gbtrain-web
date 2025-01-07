@@ -7,7 +7,7 @@ import {
   FormBuilder,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AlertConfig, AlertModule } from 'ngx-bootstrap/alert';
 import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
@@ -119,10 +119,8 @@ export class InputBoxComponent implements OnInit, OnDestroy {
       const priorityA = getPriority(a.stationName);
       const priorityB = getPriority(b.stationName);
 
-      console.log(i+"  "+a.stationName+"  "+priorityA);
-      console.log(i+"  "+b.stationName+"  "+priorityB);
-
-      i+=1
+      // console.log(i+"  "+a.stationName+"  "+priorityA);
+      // console.log(i+"  "+b.stationName+"  "+priorityB);
 
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
@@ -154,28 +152,24 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectOrigin(): void {
-    try {
-      this.origin =
-        this.stations.find(
-          (station) =>
-            station.stationFullname === this.form.controls['origin'].value
-        )?.stationName || '';
-    } catch (error) {
-      this.origin = '';
-    }
+  onSelectOrigin($event:TypeaheadMatch<StationModel>): void {
+    this.origin = $event.item.stationName
+    this.form.controls['origin'].setValue(`${$event.item.stationName.padEnd(5," ")} |  ${$event.item.stationFullname}`)
   }
 
-  onSelectDestination(): void {
-    try {
-      this.destination =
-        this.stations.find(
-          (station) =>
-            station.stationFullname === this.form.controls['destination'].value
-        )?.stationName || '';
-    } catch (error) {
-      this.destination = '';
-    }
+  onSelectDestination($event:TypeaheadMatch<StationModel>): void {
+    this.destination = $event.item.stationName
+    this.form.controls['destination'].setValue(`${$event.item.stationName.padEnd(5," ")} |  ${$event.item.stationFullname}`)
+    
+    // try {
+    //   this.destination =
+    //     this.stations.find(
+    //       (station) =>
+    //         station.stationFullname === this.form.controls['destination'].value
+    //     )?.stationName || '';
+    // } catch (error) {
+    //   this.destination = '';
+    // }
   }
 
   onSelectType(typeId: number): void {

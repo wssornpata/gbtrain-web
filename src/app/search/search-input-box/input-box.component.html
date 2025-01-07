@@ -6,13 +6,14 @@
 				Index: {{ index }}</h5>
 		</ng-template>
 		<div>
-			<div class="mb-5">
+			<div class="mb-5 d-flex flex-column">
 				<label class="topic" for="origin">Origin:</label>
 				<input
 					id="origin"
 					type="text"
 					formControlName="origin"
 					(click)="this.messageResponse.clearMessage()"
+					(blur)="logForm()"
 					[typeahead]="stations"
 					[typeaheadOptionField]="'stationFullname'"
 					[typeaheadOptionsLimit]="stations.length"
@@ -20,7 +21,7 @@
 					[typeaheadItemTemplate]="customTemplate"
 					[isAnimated]="true"
 					[typeaheadGroupField]="'colorMappingEntity.colorFullname'"
-					(typeaheadOnSelect)="this.onSelectOrigin()"
+					(typeaheadOnSelect)="this.onSelectOrigin($event)"
 					class="form-control"
 					placeholder="Enter Origin"
 					[class.is-invalid]="form.controls['origin'].invalid && (form.controls['origin'].touched || form.controls['origin'].dirty)">
@@ -32,7 +33,39 @@
 						class="text-danger">Origin is invalid.
 					</div>
 				</div>
-			</div>
+
+				<!-- <div class="btn-group" dropdown [autoClose]="true" container="body">
+					<input type="text" name="origin" onclick="" id="">
+					<ul id="dropdown-nested" *dropdownMenu class="dropdown-menu"
+						role="menu" aria-labelledby="button-nested">
+					  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action</a></li>
+				   
+					  <li role="menuitem" dropdown triggers="mouseover" placement="right" container="body">
+						<a dropdownToggle class="dropdown-item dropdown-toggle"
+						   (click)="false">Hover me for nested dropdown <span class="caret"></span></a>
+						<ul *dropdownMenu class="dropdown-menu" role="menu">
+						  <li><li role="menuitem" *ngFor="let type of types">
+							<a class="dropdown-item" (click)="onSelectType(type.id)">
+								{{type.description}}</a>
+						</ul>
+					  </li>
+				   
+					  <li role="menuitem" dropdown triggers="mouseover" placement="right" container="body">
+						<a dropdownToggle class="dropdown-item dropdown-toggle"
+						   (click)="false">Hover me for nested dropdown <span class="caret"></span></a>
+						<ul *dropdownMenu class="dropdown-menu" role="menu">
+						  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action</a></li>
+						  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action1</a></li>
+						  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action2</a></li>
+						</ul>
+					  </li>
+				   
+					  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Something else here</a></li>
+					  <li class="divider dropdown-divider"></li>
+					  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Separated link</a></li>
+					</ul>
+				  </div> -->
+			</div> 
 			<div class="mb-5">
 				<label class="topic" for="destination">Destination:</label>
 				<input
@@ -46,7 +79,7 @@
 					[typeaheadItemTemplate]="customTemplate"
 					[isAnimated]="true"
 					typeaheadGroupField="colorMappingEntity.colorFullname"
-					(typeaheadOnSelect)="this.onSelectDestination()"
+					(typeaheadOnSelect)="this.onSelectDestination($event)"
 					class="form-control"
 					placeholder="Enter Destination"
 					formControlName="destination"
