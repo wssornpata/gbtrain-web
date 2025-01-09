@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
   FormBuilder,
+  FormControl,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -47,8 +48,10 @@ export class InputBoxComponent implements OnInit, OnDestroy {
 
   onDestroy: Subject<void> = new Subject<void>();
 
-  origin = '';
-  destination = '';
+  origin = new StationModel();
+  destination = new StationModel();
+  // origin = '';
+  // destination = '';
   form!: FormGroup;
   stations: StationModel[] = [];
   types: TypeModel[] = [];
@@ -68,9 +71,15 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      origin: ['', [Validators.required, Validators.maxLength(255)]],
-      destination: ['', [Validators.required, Validators.maxLength(255)]],
-      type: [1, Validators.required],
+      origin: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(255),
+      ]),
+      destination: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(255),
+      ]),
+      type: new FormControl(1, [Validators.required]),
     });
   }
 
@@ -90,20 +99,23 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     this.modalRef?.hide();
   }
 
-  private async loadColorMappings(): Promise<void>{
+  private async loadColorMappings(): Promise<void> {
     try {
       const response: HttpResponse<any> =
         await this.searchInputBoxService.getColorMappings();
-        console.log(response);
-        
-        this.colorMappings = response.body;
+      console.log(response);
+
+      this.colorMappings = response.body;
     } catch (error) {
       this.errorHandlingService.handleError(error);
     }
   }
 
-   getStationByColor(colorMapping: ColorMappingModel): StationModel[]{
-    return this.stations.filter(station => station.colorMappingEntity.colorName === colorMapping.colorName)
+  getStationByColor(colorMapping: ColorMappingModel): StationModel[] {
+    return this.stations.filter(
+      (station) =>
+        station.colorMappingEntity.colorName === colorMapping.colorName
+    );
   }
 
   private async loadStations(): Promise<void> {
@@ -116,9 +128,8 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getSortStations(stationList: StationModel[]): StationModel[]{
-  
-    return  stationList.sort((a, b) => {
+  private getSortStations(stationList: StationModel[]): StationModel[] {
+    return stationList.sort((a, b) => {
       const getPriority = (stationName: string): number => {
         if (stationName.startsWith('N')) return 1;
         if (stationName.startsWith('CEN')) return 2;
@@ -156,7 +167,6 @@ export class InputBoxComponent implements OnInit, OnDestroy {
       }
       return 0;
     });
-
   }
 
   private async loadType(): Promise<void> {
@@ -169,24 +179,45 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectOrigin($event:TypeaheadMatch<StationModel>): void {
-    this.origin = $event.item.stationName
-    this.form.controls['origin'].setValue(`${$event.item.stationName.padEnd(5," ")} |  ${$event.item.stationFullname}`)
+  // onSelectOrigin($event: TypeaheadMatch<StationModel>): void {
+  //   this.origin = $event.item;
+  // this.form.controls['origin'].setValue(
+  //   `${this.origin.stationName.padEnd(5, ' ')} |  ${
+  //     this.origin.stationFullname
+  //   }`
+  // );
+  // }
+
+  // onSelectDestination($event: TypeaheadMatch<StationModel>): void {
+  //   this.destination = $event.item;
+  //   this.form.controls['destination'].setValue(
+  //     `${this.destination.stationName.padEnd(5, ' ')} |  ${
+  //       this.destination.stationFullname
+  //     }`
+  //   );
+
+  //   // try {
+  //   //   this.destination =
+  //   //     this.stations.find(
+  //   //       (station) =>
+  //   //         station.stationFullname === this.form.controls['destination'].value
+  //   //     )?.stationName || '';
+  //   // } catch (error) {
+  //   //   this.destination = '';
+  //   // }
+  // }
+
+  setOriginObject(station: StationModel): void {
+    this.origin = station;
+    this.form.controls['origin'].setValue(this.origin.stationName);
+    this.logForm();
   }
 
-  onSelectDestination($event:TypeaheadMatch<StationModel>): void {
-    this.destination = $event.item.stationName
-    this.form.controls['destination'].setValue(`${$event.item.stationName.padEnd(5," ")} |  ${$event.item.stationFullname}`)
-    
-    // try {
-    //   this.destination =
-    //     this.stations.find(
-    //       (station) =>
-    //         station.stationFullname === this.form.controls['destination'].value
-    //     )?.stationName || '';
-    // } catch (error) {
-    //   this.destination = '';
-    // }
+  setDestinationObject(station: StationModel): void {
+    this.destination = station;
+    this.form.controls['destination'].setValue(this.destination.stationName);
+
+    this.logForm();
   }
 
   onSelectType(typeId: number): void {
@@ -208,8 +239,8 @@ export class InputBoxComponent implements OnInit, OnDestroy {
     this.messageResponse.clearMessage();
 
     const fareCalculatorRequest = new FareCalculatorRequest(
-      this.origin,
-      this.destination,
+      this.origin.stationName,
+      this.destination.stationName,
       this.form.controls['type'].value
     );
 

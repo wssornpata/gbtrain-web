@@ -8,7 +8,7 @@
 		<div>
 			<div class="mb-5 d-flex flex-column">
 				<label class="topic" for="origin">Origin:</label>
-				<input
+				<!-- <input
 					id="origin"
 					type="text"
 					formControlName="origin"
@@ -32,12 +32,21 @@
 					<div *ngIf="form.controls['origin'].errors?.['maxlength']"
 						class="text-danger">Origin is invalid.
 					</div>
-				</div>
-				<!-- <div class="btn-group" dropdown [autoClose]="true" container="body">
+				</div> -->
+				<div class="btn-group" dropdown [autoClose]="true" container="body">
 					<button id="button-nested" dropdownToggle type="button"
-						class="btn btn-primary dropdown-toggle"
+						class="btn btn-outline-dark dropdown-toggle text-start"
 						aria-controls="dropdown-nested">
-						Enter Source<span class="caret"></span>
+						<ng-container *ngIf="origin && origin.stationName; else noOrigin">
+							<span class="caret">
+								{{ origin.stationName }} | {{ origin.stationFullname }}
+							</span>
+						</ng-container>
+						<ng-template #noOrigin>
+							<span class="caret">
+								Enter Origin
+							</span>
+						</ng-template>
 					</button>
 					<ul id="dropdown-nested" *dropdownMenu class="dropdown-menu"
 						role="menu" aria-labelledby="button-nested">
@@ -46,7 +55,6 @@
 							<a
 								dropdownToggle class="dropdown-item dropdown-toggle"
 								(click)="false"
-								routerLink="."
 								fragment="nested-dropdowns"
 								[ngClass]="colorMappingEntity.colorName + '-text'">
 								{{ colorMappingEntity.colorFullname }}
@@ -54,8 +62,8 @@
 							<ul *dropdownMenu class="dropdown-menu" role="menu">
 								<li role="menuitem"
 									*ngFor="let station of getStationByColor(colorMappingEntity)">
-									<a class="dropdown-item" routerLink="."
-										[ngClass]="colorMappingEntity.colorName + '-text'"
+									<a class="dropdown-item"
+										(click)="this.setOriginObject(station)"
 										fragment="nested-dropdowns"><div class="d-lg-inline-flex w-100">
 											<div class="name-box">
 												{{ station.stationName }}
@@ -64,16 +72,25 @@
 											<div class="fullname-box">
 												{{ station.stationFullname }}
 											</div>
-										</div></a>
+										</div>
+									</a>
 								</li>
 							</ul>
 						</li>
 					</ul>
-				</div> -->
+				</div>
 			</div>
-			<div class="mb-5">
+			<div class="invalid-feedback">
+				<div
+					*ngIf="form.controls['origin'].touched && form.controls['origin'].errors?.['required']"
+					class="text-danger">Origin is required.</div>
+				<div *ngIf="form.controls['origin'].errors?.['maxlength']"
+					class="text-danger">Origin is invalid.
+				</div>
+			</div>
+			<div class="mb-5 d-flex flex-column">
 				<label class="topic" for="destination">Destination:</label>
-				<input
+				<!-- <input
 					id="destination"
 					type="text"
 					formControlName="destination"
@@ -89,6 +106,60 @@
 					placeholder="Enter Destination"
 					formControlName="destination"
 					[class.is-invalid]="form.controls['destination'].invalid && (form.controls['destination'].touched || form.controls['destination'].dirty)">
+				<div class="invalid-feedback">
+					<div
+						*ngIf="form.controls['destination'].touched && form.controls['destination'].errors?.['required']"
+						class="text-danger">Destination is required.</div>
+					<div *ngIf="form.controls['destination'].errors?.['maxlength']"
+						class="text-danger">Destination is invalid.
+					</div>
+				</div> -->
+				<div class="btn-group" dropdown [autoClose]="true" container="body">
+					<button id="button-nested" dropdownToggle type="button"
+						class="btn btn-outline-dark dropdown-toggle text-start"
+						aria-controls="dropdown-nested">
+						<ng-container
+							*ngIf="destination && destination.stationName; else noDestination">
+							<span class="caret">
+								{{ destination.stationName }} | {{ destination.stationFullname }}
+							</span>
+						</ng-container>
+						<ng-template #noDestination>
+							<span class="caret">
+								Enter Destiation
+							</span>
+						</ng-template>
+					</button>
+					<ul id="dropdown-nested" *dropdownMenu class="dropdown-menu"
+						role="menu" aria-labelledby="button-nested">
+						<li role="menuitem" container="body" dropdown triggers="mouseover"
+							placement="right" *ngFor="let colorMappingEntity of colorMappings">
+							<a
+								dropdownToggle class="dropdown-item dropdown-toggle"
+								(click)="false"
+								fragment="nested-dropdowns"
+								[ngClass]="colorMappingEntity.colorName + '-text'">
+								{{ colorMappingEntity.colorFullname }}
+							</a>
+							<ul *dropdownMenu class="dropdown-menu" role="menu">
+								<li role="menuitem"
+									*ngFor="let station of getStationByColor(colorMappingEntity)">
+									<a class="dropdown-item"
+										(click)="this.setDestinationObject(station)"
+										fragment="nested-dropdowns"><div class="d-lg-inline-flex w-100">
+											<div class="name-box">
+												{{ station.stationName }}
+											</div>
+											|
+											<div class="fullname-box">
+												{{ station.stationFullname }}
+											</div>
+										</div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 				<div class="invalid-feedback">
 					<div
 						*ngIf="form.controls['destination'].touched && form.controls['destination'].errors?.['required']"
