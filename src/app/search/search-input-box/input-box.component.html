@@ -33,39 +33,44 @@
 						class="text-danger">Origin is invalid.
 					</div>
 				</div>
-
-				<!-- <div class="btn-group" dropdown [autoClose]="true" container="body">
-					<input type="text" name="origin" onclick="" id="">
-					<ul id="dropdown-nested" *dropdownMenu class="dropdown-menu"
+				<div class="btn-group" dropdown [autoClose]="true" container="body">
+					<button id="button-nested" dropdownToggle type="button"
+						class="btn btn-primary dropdown-toggle"
+						aria-controls="dropdown-nested">
+						Enter Source<span class="caret"></span>
+					</button>
+					<!-- <ul id="dropdown-nested" *dropdownMenu class="dropdown-menu"
 						role="menu" aria-labelledby="button-nested">
-					  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action</a></li>
-				   
-					  <li role="menuitem" dropdown triggers="mouseover" placement="right" container="body">
-						<a dropdownToggle class="dropdown-item dropdown-toggle"
-						   (click)="false">Hover me for nested dropdown <span class="caret"></span></a>
-						<ul *dropdownMenu class="dropdown-menu" role="menu">
-						  <li><li role="menuitem" *ngFor="let type of types">
-							<a class="dropdown-item" (click)="onSelectType(type.id)">
-								{{type.description}}</a>
-						</ul>
-					  </li>
-				   
-					  <li role="menuitem" dropdown triggers="mouseover" placement="right" container="body">
-						<a dropdownToggle class="dropdown-item dropdown-toggle"
-						   (click)="false">Hover me for nested dropdown <span class="caret"></span></a>
-						<ul *dropdownMenu class="dropdown-menu" role="menu">
-						  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action</a></li>
-						  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action1</a></li>
-						  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Action2</a></li>
-						</ul>
-					  </li>
-				   
-					  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Something else here</a></li>
-					  <li class="divider dropdown-divider"></li>
-					  <li role="menuitem"><a class="dropdown-item" routerLink="." fragment="nested-dropdowns">Separated link</a></li>
-					</ul>
-				  </div> -->
-			</div> 
+						<li role="menuitem" container="body" dropdown triggers="mouseover"
+							placement="right" *ngFor="let colorMappingEntity of colorMappings">
+							<a
+								dropdownToggle class="dropdown-item dropdown-toggle"
+								(click)="false"
+								routerLink="."
+								fragment="nested-dropdowns"
+								[ngClass]="colorMappingEntity.colorName + '-text'">
+								{{ colorMappingEntity.colorFullname }}
+							</a>
+							<ul *dropdownMenu class="dropdown-menu" role="menu">
+								<li role="menuitem"
+									*ngFor="let station of getStationByColor(colorMappingEntity)">
+									<a class="dropdown-item" routerLink="."
+										[ngClass]="colorMappingEntity.colorName + '-text'"
+										fragment="nested-dropdowns"><div class="d-lg-inline-flex w-100">
+											<div class="name-box">
+												{{ station.stationName }}
+											</div>
+											|
+											<div class="fullname-box">
+												{{ station.stationFullname }}
+											</div>
+										</div></a>
+								</li>
+							</ul>
+						</li>
+					</ul> -->
+				</div>
+			</div>
 			<div class="mb-5">
 				<label class="topic" for="destination">Destination:</label>
 				<input

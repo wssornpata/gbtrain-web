@@ -55,6 +55,17 @@ form {
   color: green;
 }
 
+.dropdown-item{
+  font-weight: bolder;
+}
+
+.DarkGreen-text {
+  color: darkgreen;
+}
+
+.Green-text {
+  color: rgb(0, 159, 0);
+}
 .name-box{
   width: 20%;
 }

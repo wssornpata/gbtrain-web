@@ -19,6 +19,7 @@ import { FareCalculatorResponse } from './dto/response/fare-calculator-response.
 import { ErrorHandlingService } from '../../services/errorhandling.service';
 import { Subject } from 'rxjs';
 import { SearchInputBoxService } from '../services/searchInputBox.service';
+import { ColorMappingModel } from '../../model/colormapping-model';
 
 @Component({
   selector: 'app-input-box',
@@ -48,10 +49,10 @@ export class InputBoxComponent implements OnInit, OnDestroy {
 
   origin = '';
   destination = '';
-  colorMap = new Map<string, string>();
   form!: FormGroup;
   stations: StationModel[] = [];
   types: TypeModel[] = [];
+  colorMappings: ColorMappingModel[] = [];
   responseData: FareCalculatorResponse = new FareCalculatorResponse();
   messageResponse: MessageResponse = new MessageResponse();
   modalRef?: BsModalRef;
@@ -76,6 +77,7 @@ export class InputBoxComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadStations();
     this.loadType();
+    this.loadColorMappings();
     // this.form = this.searchFormService.initSearchForm(this.onDestroy);
     // this.form.controls['type'].setValue(1);
   }
@@ -86,6 +88,22 @@ export class InputBoxComponent implements OnInit, OnDestroy {
 
   closeModal(): void {
     this.modalRef?.hide();
+  }
+
+  private async loadColorMappings(): Promise<void>{
+    try {
+      const response: HttpResponse<any> =
+        await this.searchInputBoxService.getColorMappings();
+        console.log(response);
+        
+        this.colorMappings = response.body;
+    } catch (error) {
+      this.errorHandlingService.handleError(error);
+    }
+  }
+
+   getStationByColor(colorMapping: ColorMappingModel): StationModel[]{
+    return this.stations.filter(station => station.colorMappingEntity.colorName === colorMapping.colorName)
   }
 
   private async loadStations(): Promise<void> {
@@ -99,8 +117,7 @@ export class InputBoxComponent implements OnInit, OnDestroy {
   }
 
   private getSortStations(stationList: StationModel[]): StationModel[]{
-    
-    let i = 0;
+  
     return  stationList.sort((a, b) => {
       const getPriority = (stationName: string): number => {
         if (stationName.startsWith('N')) return 1;

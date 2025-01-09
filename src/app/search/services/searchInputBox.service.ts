@@ -28,6 +28,15 @@ export class SearchInputBoxService {
     );
   }
 
+  getColorMappings(): Promise<HttpResponse<any>> {
+    return firstValueFrom(
+      this.http.get<HttpResponse<any>>(
+        `${environment.BASEURL_DROPDOWN}/colorMapping`,
+        { observe: 'response' }
+      )
+    );
+  }
+
   calculateFare(
     fareCalculatorRequest: FareCalculatorRequest
   ): Promise<HttpResponse<any>> {
